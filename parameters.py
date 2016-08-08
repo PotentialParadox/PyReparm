@@ -30,10 +30,10 @@ class Parameters:
             if not re.search(p_eheat, label) and not re.search(p_eisol, label):
                 m = re.findall(p_float, label)
                 for j, floater in enumerate(m):
-                    p_floats.append(floater)
-                    p_floats.append(i)
-                    p_floats.append(j)
-                    p_floats.append(line_count)
+                    p_floats.append(float(floater))
+                    p_floats.append(int(i))
+                    p_floats.append(int(j))
+                    p_floats.append(int(line_count))
                 self.labels[i] = re.sub(p_not_label, "", label)
             if re.search(p_newline, label):
                 line_count += 1

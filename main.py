@@ -54,11 +54,10 @@ MUTPT = reparm_data.reparm_input.mutation_perturbation
 # Initial Perturbation
 IMUTPT = 0.05
 # Initial List of parameters
-IL = [200.45, 3.8, 6.89, 20, 43, 5]
-# Goal List
-goal = [6, 6, 6, 6, 6, 6, 6]
+IL = reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats
+
 # The evaluator (fitness, cost) function
-eval = Evaluator(goal=goal, reparm_data=reparm_data)
+eval = Evaluator(reparm_data=reparm_data)
 
 #############################################
 #         END USER INPUT
@@ -83,13 +82,13 @@ pop = toolbox.population(n=PSIZE)
 
 best = None
 
-#############################################
-#         END DEAP SETUP
-#############################################
-
-#############################################
-#         BEGIN GENETIC ALGORITHM
-#############################################
+# #############################################
+# #         END DEAP SETUP
+# #############################################
+#
+# #############################################
+# #         BEGIN GENETIC ALGORITHM
+# #############################################
 for g in range(NGEN):
     offspring = toolbox.select(pop, len(pop))
     offspring = list(map(toolbox.clone, offspring))
@@ -107,7 +106,7 @@ for g in range(NGEN):
     for ind, fit in zip(invalid_ind, fitnesses):
         ind.fitness.values = fit
     pop[:] = offspring
-# print(pop[1])
+print(pop[1])
 #############################################
 #         End Genetic Algorithm
 #############################################
@@ -131,20 +130,5 @@ for g in range(NGEN):
 #         End Particle Simulation
 #############################################
 
-# fin = open("reparm.in", 'r')
-# file = fin.read()
-# reparm_data = ReparmData(file)
-# reparm_data.load()
-# Genesis(reparm_data)
-
-# fin = open("test.com")
-# file = fin.read()
-# gin = GaussianInput(input_string=file)
-# gin2 = GaussianInput(header=gin.header,
-#                      coordinates=gin.coordinates,
-#                      parameters=gin.parameters)
-# inputs = [gin, gin2]
-# paramgroup = ParameterGroup(inputs=inputs)
-# print(paramgroup.inputs[0].str())
-# paramgroup.set_pfloats(gin.parameters[0].p_floats)
-# print(paramgroup.inputs[0].str())
+A = [[2, 3, 4],[5, 6, 7]]
+print(A[0::1])
