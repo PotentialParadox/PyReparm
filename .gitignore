@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Folders
+testing
+
 # C extensions
 *.so
 
@@ -87,3 +90,8 @@ ENV/
 
 # Rope project settings
 .ropeproject
+.idea/
+hlt.chk
+reparm.dat
+reparm.in
+test.com
