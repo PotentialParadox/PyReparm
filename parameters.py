@@ -45,9 +45,9 @@ class Parameters:
         for i in range(0, len(self.p_floats), 4):
             ss = ""
             if p[i+2] == 0:
-                ss += str(p[i])
+                ss += "{0:.10f}".format(p[i])
             else:
-                ss += "," + str(p[i])
+                ss += "," + "{0:.10f}".format(p[i])
             if i >= len(self.p_floats) - 4:
                 ss += "\n"
             elif p[i+7] > p[i+3]:
