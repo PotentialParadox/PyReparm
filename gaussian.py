@@ -25,16 +25,21 @@ def gaussian_single(input_file):
 
 
 # Returns a list of type gaussian output
-def run_gaussian(parameter_group=None):
+def run_gaussian(parameter_group=None, number_processors=1):
     input_list = []
     for i in parameter_group.inputs:
         input_list.append(i.str())
-    p = Pool(4)
+    p = Pool(number_processors)
     output_strings = p.map(gaussian_single, input_list)
+    p.close()
+    p.join()
     outputs = []
     for i in output_strings:
         if i:
-            outputs.append(GaussianOutput(i))
+            try:
+                outputs.append(GaussianOutput(i))
+            except AttributeError:
+                return None
         else:
             return None
     return outputs

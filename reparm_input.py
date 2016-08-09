@@ -14,6 +14,8 @@ class ReparmInput:
         self.mutation_probability = find_mutation_probability(input_string)
         self.mutation_rate = find_mutation_rate(input_string)
         self.mutation_perturbation = find_mutation_perturbation(input_string)
+        self.crossover_probability = find_crossover_probability(input_string)
+        self.crowding_factor = find_crowding_factor(input_string)
         self.survival_chance = find_survival_chance(input_string)
         self.should_continue = find_should_continue(input_string)
 
@@ -110,6 +112,24 @@ def find_mutation_rate(input_string):
 
 def find_mutation_perturbation(input_string):
     p_search = re.compile("Mutation Perturbation:\s+(.+)")
+    m = re.search(p_search, input_string)
+    if m:
+        return float(m.group(1))
+    else:
+        return None
+
+
+def find_crossover_probability(input_string):
+    p_search = re.compile("Crossover Probability:\s+(.+)")
+    m = re.search(p_search, input_string)
+    if m:
+        return float(m.group(1))
+    else:
+        return None
+
+
+def find_crowding_factor(input_string):
+    p_search = re.compile("Crowding Factor:\s+(.+)")
     m = re.search(p_search, input_string)
     if m:
         return float(m.group(1))

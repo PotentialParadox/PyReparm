@@ -43,7 +43,7 @@ NGEN = reparm_data.reparm_input.number_generations
 # PopulationSize
 PSIZE = reparm_data.reparm_input.population_size
 # Crossover Probability
-CXPB = 0.5
+CXPB = reparm_data.reparm_input.crossover_probability
 # Mutation Probability
 # How likely and individual will be mutated
 MUTPB = reparm_data.reparm_input.mutation_probability
@@ -51,7 +51,7 @@ MUTPB = reparm_data.reparm_input.mutation_probability
 # How likely a member of an individual will be mutated
 MUTR = reparm_data.reparm_input.mutation_rate
 # Crowding Factor
-CWD = 0.2
+CWD = reparm_data.reparm_input.crowding_factor
 # Mutation Perturbation
 MUTPT = reparm_data.reparm_input.mutation_perturbation
 # Initial Perturbation
@@ -97,6 +97,7 @@ best = None
 #         BEGIN GENETIC ALGORITHM
 #############################################
 for g in range(NGEN):
+    print("Starting gen:", g)
     offspring = toolbox.select(pop, len(pop))
     offspring = list(map(toolbox.clone, offspring))
     for child1, child2 in zip(offspring[::2], offspring[1::2]):
@@ -146,3 +147,10 @@ for g in range(NGEN):
 #         End Particle Simulation
 #############################################
 
+#############################################
+#         Begin Print Out
+#############################################
+
+#############################################
+#         End Print Out
+#############################################
