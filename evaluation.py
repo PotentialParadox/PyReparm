@@ -2,7 +2,7 @@ from reparm_data import ReparmData
 import math
 from random import random
 from copy import deepcopy
-from parameter_group import ParameterGroup
+from gaussian import run_gaussian
 
 
 class Evaluator:
@@ -11,14 +11,32 @@ class Evaluator:
         self.goal = goal
 
     # Evaluates an individual
-    def eval(self, part):
-        r_value = random()
-        if r_value < 0.1:
+    def eval(self, am1):
+        param_group = deepcopy(self.reparm_data.best_am1_individual)
+        hlt = deepcopy(self.reparm_data.high_level_outputs)
+        # Convert part into p_floats
+        p_floats = param_group.inputs[0].parameters[0].p_floats
+        for i in range(len(am1)):
+            p_floats[4*i] = am1[i]
+        gouts = run_gaussian(parameter_group=param_group)
+        if not gouts:
             return None
-        sum = 0
-        for i in range(0, len(part)):
-            if part[i] > 0:
-                sum += math.pow((part[i] - 6), 2)
-            if part[i] < 0:
-                sum += math.pow((part[i] + 6), 2)
-        return sum,
+        energy_fitness = self.energy_fitness(gouts)
+        total_fitness = energy_fitness
+        return total_fitness,
+
+    def energy_fitness(self, am1):
+        hlt = self.reparm_data.high_level_outputs
+        hlt_energy_differences = []
+        for i in range(1, len(hlt)):
+            hlt_energy_differences.append(hlt[i].ground_energy - hlt[i-1].ground_energy)
+
+        am1_energy_differences = []
+        for i in range(1, len(am1)):
+            am1_energy_differences.append(am1[i].ground_energy - am1[i-1].ground_energy)
+
+        sum_of_squares = 0
+        for am1_diff, hlt_diff in zip(am1_energy_differences, hlt_energy_differences):
+            sum_of_squares += math.pow(am1_diff - hlt_diff, 2)
+
+        return sum_of_squares

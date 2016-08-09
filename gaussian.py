@@ -20,6 +20,7 @@ def gaussian_single(input_file):
         return None
 
 
+# Returns a list of type gaussian output
 def run_gaussian(parameter_group=None):
     input_list = []
     for i in parameter_group.inputs:
@@ -30,6 +31,6 @@ def run_gaussian(parameter_group=None):
     for i in output_strings:
         if i:
             outputs.append(GaussianOutput(i))
-    if not output_strings:
-        return None
+        else:
+            return None
     return outputs

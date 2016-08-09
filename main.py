@@ -63,7 +63,8 @@ for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_
 
 # The evaluator (fitness, cost) function
 eval = Evaluator(reparm_data=reparm_data)
-eval.eval(IL)
+original_fitness = eval.eval(IL)
+print("original_fitness", original_fitness)
 
 #############################################
 #         END USER INPUT
@@ -118,8 +119,10 @@ for g in range(NGEN):
     for ind, fit in zip(invalid_ind, fitnesses):
         if fit:
             ind.fitness.values = fit
+            if not best or fit < best.fitness.values:
+                best = ind
+                print("NewBest Found:", fit)
     pop[:] = offspring
-print(pop[0])
 #############################################
 #         End Genetic Algorithm
 #############################################
