@@ -25,6 +25,7 @@ class ParameterGroup:
         return list(self.inputs)
 
     def set_pfloats(self, pfloats):
-        for i in self.inputs:
-            for j in i.parameters:
-                j.p_floats = pfloats
+        for i in range(len(self.inputs)):
+            for j in range(len(self.inputs[i].parameters)):
+                for k in range(len(pfloats)):
+                    self.inputs[i].parameters[j].p_floats[4*k] = pfloats[k]

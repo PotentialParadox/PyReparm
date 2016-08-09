@@ -122,6 +122,7 @@ for g in range(NGEN):
             ind.fitness.values = fit
             if not best or fit < best.fitness.values:
                 best = ind
+                reparm_data.best_am1_individual.set_pfloats(best)
                 print("NewBest Found:", fit)
     pop[:] = offspring
 #############################################
@@ -150,7 +151,7 @@ for g in range(NGEN):
 #############################################
 #         Begin Print Out
 #############################################
-
+print(reparm_data.best_am1_individual.inputs[0].str())
 #############################################
 #         End Print Out
 #############################################
