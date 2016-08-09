@@ -89,13 +89,13 @@ pop = toolbox.population(n=PSIZE)
 
 best = None
 
-# #############################################
-# #         END DEAP SETUP
-# #############################################
-#
-# #############################################
-# #         BEGIN GENETIC ALGORITHM
-# #############################################
+#############################################
+#         END DEAP SETUP
+#############################################
+
+#############################################
+#         BEGIN GENETIC ALGORITHM
+#############################################
 for g in range(NGEN):
     offspring = toolbox.select(pop, len(pop))
     offspring = list(map(toolbox.clone, offspring))

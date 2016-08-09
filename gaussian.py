@@ -10,13 +10,17 @@ import re
 #               takes the string of an input file, and returns
 #               the string of the gaussian output
 def gaussian_single(input_file):
-    proc = subprocess.Popen(['g09 2>&1 <<END\n' + input_file + 'END'], shell=True,
-                            stdout=subprocess.PIPE, universal_newlines=True)
-    stdout_value = str(proc.communicate()[0])
-    p_normal = re.compile('Normal termination')
-    if re.search(p_normal, str(stdout_value)):
-        return stdout_value
-    else:
+    stderr_value = None
+    try:
+        proc = subprocess.Popen(['g09 2>&1 <<END\n' + input_file + 'END'], shell=True,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                universal_newlines=True)
+        stdout_value, stderr_value = proc.communicate()
+        p_normal = re.compile('Normal termination')
+        if re.search(p_normal, str(stdout_value)):
+            return str(stdout_value)
+        return None
+    except:
         return None
 
 
