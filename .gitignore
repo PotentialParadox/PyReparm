@@ -92,6 +92,7 @@ ENV/
 .ropeproject
 .idea/
 hlt.chk
-reparm.dat
-reparm.in
-test.com
+testing/reparm.dat
+testing/reparm.in
+testing/test.com
+/testing/reparm_best.com
