@@ -2,7 +2,7 @@ import random
 
 def mutateset(part, pert, chance):
     if not part.best:
-        for i in range(0, len(part), 4):
+        for i in range(0, len(part)):
             go = random.random()
             if go < chance:
                 l = part[i]

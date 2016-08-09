@@ -1,4 +1,5 @@
 import random
+import bitstring
 import math
 from evaluation import Evaluator
 from generator import generator
@@ -49,15 +50,20 @@ MUTPB = reparm_data.reparm_input.mutation_probability
 # Mutation Rate
 # How likely a member of an individual will be mutated
 MUTR = reparm_data.reparm_input.mutation_rate
+# Crowding Factor
+CWD = 0.2
 # Mutation Perturbation
 MUTPT = reparm_data.reparm_input.mutation_perturbation
 # Initial Perturbation
 IMUTPT = 0.05
 # Initial List of parameters
-IL = reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats
+IL = []
+for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
+    IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
 
 # The evaluator (fitness, cost) function
 eval = Evaluator(reparm_data=reparm_data)
+eval.eval(IL)
 
 #############################################
 #         END USER INPUT
@@ -73,7 +79,7 @@ creator.create("ParamSet", list, fitness=creator.FitnessMax, best=None)
 toolbox = base.Toolbox()
 toolbox.register("individual", generator, IL, IMUTPT)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("mate", tools.cxTwoPoint)
+toolbox.register("mate", tools.cxSimulatedBinary)
 toolbox.register("mutate", mutateset, pert=MUTPT, chance=MUTR)
 toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("evaluate", eval.eval)
@@ -94,7 +100,7 @@ for g in range(NGEN):
     offspring = list(map(toolbox.clone, offspring))
     for child1, child2 in zip(offspring[::2], offspring[1::2]):
         if random.random() < CXPB:
-            toolbox.mate(child1, child2)
+            toolbox.mate(child1, child2, CWD)
             del child1.fitness.values
             del child2.fitness.values
     for mutant in offspring:
@@ -102,11 +108,18 @@ for g in range(NGEN):
             toolbox.mutate(mutant)
             del mutant.fitness.values
     invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-    fitnesses = map(toolbox.evaluate, invalid_ind)
+    fitnesses = []
+    for i in invalid_ind:
+        try:
+            fitness = toolbox.evaluate(i)
+            fitnesses.append(fitness)
+        except TypeError:
+            fitnesses.append(None)
     for ind, fit in zip(invalid_ind, fitnesses):
-        ind.fitness.values = fit
+        if fit:
+            ind.fitness.values = fit
     pop[:] = offspring
-print(pop[1])
+print(pop[0])
 #############################################
 #         End Genetic Algorithm
 #############################################
@@ -130,5 +143,3 @@ print(pop[1])
 #         End Particle Simulation
 #############################################
 
-A = [[2, 3, 4],[5, 6, 7]]
-print(A[0::1])
