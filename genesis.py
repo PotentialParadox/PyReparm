@@ -61,9 +61,15 @@ class Genesis:
         header2 = Header(s_header2)
         gin2.header[0] = header2
         gin1.link(gin2)
+        fout = open("hlt_opt.com", 'w')
+        fout.write(gin1.str())
+        fout.close()
 
         # We run the job
         gout = gaussian_single(gin1.str())
+        fout = open("hlt_opt.log", 'w')
+        fout.write(gout)
+        fout.close()
         self.opt_coords = gaussian_output.find_opt_coordinates(gout)
         self.normal_modes = gaussian_output.find_normal_modes(gout)
 

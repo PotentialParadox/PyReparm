@@ -152,8 +152,10 @@ for g in range(NGEN):
 #############################################
 #         Begin Print Out
 #############################################
+gin_best = reparm_data.best_am1_individual.inputs[0]
 fout = open("reparm_best.com", 'w')
-fout.write(reparm_data.best_am1_individual.inputs[0].str())
+fout.write(gin_best.str())
+
 #############################################
 #         End Print Out
 #############################################
