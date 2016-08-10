@@ -184,4 +184,5 @@ class Genesis:
             hlt_input.link(hlt_freq)
             hlt_inputs.append(hlt_input)
         hlt_group = ParameterGroup(inputs=hlt_inputs)
-        self.reparm_data.high_level_outputs = run_gaussian(parameter_group=hlt_group)
+        np = self.reparm_data.reparm_input.number_processors
+        self.reparm_data.high_level_outputs = run_gaussian(parameter_group=hlt_group, number_processors=np)
