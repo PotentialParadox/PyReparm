@@ -13,6 +13,7 @@ import gaussian_output
 from gaussian_input import GaussianInput
 from gaussian import gaussian_single
 from reparm_input import ReparmInput
+from header import Header
 from reparm_data import ReparmData
 from genesis import Genesis
 
@@ -153,8 +154,14 @@ for g in range(NGEN):
 #         Begin Print Out
 #############################################
 gin_best = reparm_data.best_am1_individual.inputs[0]
-fout = open("reparm_best.com", 'w')
-fout.write(gin_best.str())
+s_opt_header = "#P AM1(Input,Print) opt\n\nAM1\n"
+opt_header = Header(s_opt_header)
+gin_opt = GaussianInput(header=opt_header,
+                        coordinates=gin_best.coordinates[0],
+                        parameters=gin_best.parameters[0])
+fout = open("reparm_best_opt.com", 'w')
+fout.write(gin_opt.str())
+fout.close()
 
 #############################################
 #         End Print Out
