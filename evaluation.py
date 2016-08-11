@@ -14,10 +14,7 @@ class Evaluator:
     def eval(self, am1):
         param_group = deepcopy(self.reparm_data.best_am1_individual)
         hlt = deepcopy(self.reparm_data.high_level_outputs)
-        # Convert part into p_floats
-        p_floats = param_group.inputs[0].parameters[0].p_floats
-        for i in range(len(am1)):
-            p_floats[4*i] = am1[i]
+        param_group.set_pfloats(am1)
         gouts = run_gaussian(parameter_group=param_group)
         if not gouts:
             return None
