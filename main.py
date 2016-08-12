@@ -1,6 +1,4 @@
 import random
-import bitstring
-import math
 from evaluation import Evaluator
 from generator import generator
 from mutate import mutateset
@@ -8,7 +6,6 @@ from deap import base
 from deap import creator
 from deap import tools
 from parameter_group import ParameterGroup
-import numpy as np
 import gaussian_output
 from gaussian_input import GaussianInput
 from gaussian import gaussian_single

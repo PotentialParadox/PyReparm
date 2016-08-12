@@ -22,7 +22,9 @@ class Genesis:
         self.coordinates = []
         self.param_group = None
         self.read_user_input()
+        print("Calculating HLT Opt")
         self.find_hlt_opt_normal()
+        print("Finished HLT Opt")
         self.create_coordinates()
         self.create_initial_individual()
         print("Calculating HLT")
