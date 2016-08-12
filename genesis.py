@@ -167,6 +167,9 @@ class Genesis:
         gouts = run_gaussian(parameter_group=param_group)
         param_group.outputs = gouts
         self.param_group = param_group
+        fout = open("xyz_str.xyz", 'w')
+        fout.write(self.param_group.xyz_str())
+        fout.close()
         self.reparm_data.best_am1_individual = param_group
 
     def create_HLT(self):
