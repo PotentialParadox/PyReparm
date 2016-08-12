@@ -29,3 +29,9 @@ class ParameterGroup:
             for j in range(len(self.inputs[i].parameters)):
                 for k in range(len(pfloats)):
                     self.inputs[i].parameters[j].p_floats[4*k] = pfloats[k]
+
+    def xyz_str(self):
+        ss = ""
+        for i in self.inputs:
+            ss += i.coordinates[0].xyz_string()
+        return ss

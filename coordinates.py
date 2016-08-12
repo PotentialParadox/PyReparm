@@ -43,3 +43,11 @@ class Coordinates:
                 coord_str += "\n"
             coord_str += "\n"
         return coord_str
+
+    def xyz_string(self):
+        ss = "\n"
+        ss += str(len(self.coordinates)) + "\n"
+        for i in self.coordinates:
+            ss += str(i[0]) + " " + str(i[1]) + " "
+            ss += str(i[2]) + " " + str(i[3]) + "\n"
+        return ss
