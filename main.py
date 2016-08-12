@@ -163,6 +163,10 @@ fout = open("reparm_best_opt.com", 'w')
 fout.write(gin_opt.str())
 fout.close()
 
+gout = gaussian_single(gin_opt.str())
+fout = open("reparm_best_opt.log", 'w')
+fout.write(gout)
+fout.close()
 #############################################
 #         End Print Out
 #############################################
