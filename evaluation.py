@@ -19,8 +19,8 @@ class Evaluator:
         if not gouts:
             return None
         energy_fitness = self.energy_fitness(gouts)
-        total_fitness = energy_fitness
-        return total_fitness,
+        dipole_fitness = self.dipole_fitness(gouts)
+        return energy_fitness, dipole_fitness
 
     def energy_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs
@@ -37,3 +37,20 @@ class Evaluator:
             sum_of_squares += math.pow(am1_diff - hlt_diff, 2)
 
         return sum_of_squares
+
+    def dipole_fitness(self, am1):
+        hlt = self.reparm_data.high_level_outputs
+        hlt_dipoles = []
+        for i in hlt:
+            hlt_dipoles.extend(i.dipole)
+
+        am1_dipoles = []
+        for i in am1:
+            am1_dipoles.extend(i.dipole)
+
+        sum_of_squares = 0
+        for am1_d, hlt_d in zip(am1_dipoles, hlt_dipoles):
+            sum_of_squares += math.pow(am1_d - hlt_d, 2)
+
+        return sum_of_squares
+

@@ -75,7 +75,7 @@ print("original_fitness", original_fitness)
 #         BEGIN DEAP SETUP
 #############################################
 
-creator.create("FitnessMax", base.Fitness, weights=(-1.0,))
+creator.create("FitnessMax", base.Fitness, weights=(-1.0, -1.0))
 creator.create("ParamSet", list, fitness=creator.FitnessMax, best=None)
 
 toolbox = base.Toolbox()
