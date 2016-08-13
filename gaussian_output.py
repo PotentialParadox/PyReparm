@@ -102,7 +102,7 @@ def find_normal_modes(file_string):
 
     # To get the normal modes, we recognize that the rows we want from the output
     # are the only ones that begin with an integer and end with a double
-    p_atom = re.compile("(\n\\s+\\d\\s+.*-?\\d+\\.\\d+)")
+    p_atom = re.compile("(\n\\s+\\d+\\s+.*-?\\d+\\.\\d+)")
     atoms = re.findall(p_atom, matches[0][0])
     number_atoms = len(atoms)
     normals_of_atoms = [[] for _ in range(number_atoms)]

@@ -68,10 +68,12 @@ class Genesis:
         fout.close()
 
         # We run the job
+        print("Running Job")
         gout = gaussian_single(gin1.str())
         fout = open("hlt_opt.log", 'w')
         fout.write(gout)
         fout.close()
+        print("Finished Job")
         self.opt_coords = gaussian_output.find_opt_coordinates(gout)
         self.normal_modes = gaussian_output.find_normal_modes(gout)
 
