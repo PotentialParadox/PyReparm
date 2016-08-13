@@ -52,7 +52,7 @@ def find_parameters(file_string):
     m = re.search(p_parameters, file_string)
     if not m:
         return None
-    return Parameters(m.group(0))
+    return Parameters(from_parameter_string=m.group(0))
 
 
 # find_opt_coordinates
