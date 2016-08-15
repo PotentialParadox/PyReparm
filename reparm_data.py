@@ -12,7 +12,7 @@ from header import Header
 class ReparmData():
     def __init__(self, file_name):
         self.reparm_input = ReparmInput(file_name)
-        self.original_fitness = 100.0
+        self.original_fitness = None
         # This is a list of gaussian outputs
         self.high_level_outputs = None
         # This is of type param_group
@@ -75,7 +75,9 @@ class ReparmData():
 
     def load(self):
         fin = open("reparm.dat", 'r')
-        self.original_fitness = float(fin.readline())
+        of = fin.readline()
+        if of != "None\n":
+            self.original_fitness = float(of)
         number_geometries = int(fin.readline())
         number_atoms = int(fin.readline())
         charge = int(fin.readline())

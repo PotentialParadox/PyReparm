@@ -62,8 +62,8 @@ for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_
 
 # The evaluator (fitness, cost) function
 eval = Evaluator(reparm_data=reparm_data)
-original_fitness = eval.eval(IL)
-print("original_fitness", original_fitness)
+reparm_data.original_fitness = eval.eval(IL)
+print("original_fitness", reparm_data.original_fitness)
 
 #############################################
 #         END USER INPUT
@@ -86,7 +86,7 @@ toolbox.register("evaluate", eval.eval)
 
 pop = toolbox.population(n=PSIZE)
 
-best = None
+best = reparm_data.original_fitness
 
 #############################################
 #         END DEAP SETUP
@@ -119,9 +119,9 @@ for g in range(NGEN):
     for ind, fit in zip(invalid_ind, fitnesses):
         if fit:
             ind.fitness.values = fit
-            if not best or fit < best.fitness.values:
-                best = ind
-                reparm_data.best_am1_individual.set_pfloats(best)
+            if not best or fit < best:
+                best = fit
+                reparm_data.best_am1_individual.set_pfloats(ind)
                 reparm_data.save()
                 print("NewBest Found:", fit)
     pop[:] = offspring
