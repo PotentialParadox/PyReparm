@@ -13,6 +13,7 @@ from reparm_input import ReparmInput
 from header import Header
 from reparm_data import ReparmData
 from genesis import Genesis
+from analysis import Analysis
 
 
 #############################################
@@ -166,4 +167,12 @@ fout.write(gout)
 fout.close()
 #############################################
 #         End Print Out
+#############################################
+#############################################
+#         Begin Analysis
+#############################################
+anal = Analysis(reparm_data)
+anal.face_to_face()
+#############################################
+#         End Analysis
 #############################################
