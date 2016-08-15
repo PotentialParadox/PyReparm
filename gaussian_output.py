@@ -20,7 +20,7 @@ class GaussianOutput:
 #               takes a string of the gaussian output and returns a integer
 #               of the ground energy
 def find_ground_energy(file_string):
-    p_float = re.compile('\-?\d+\.\d+E*\-?\d*,?')
+    p_float = re.compile('\-?\d+\.\d+(E-?\d+)?,?')
     p_energy = re.compile('SCF Done.*')
     m = re.findall(p_energy, file_string)
     final_line = m[-1]

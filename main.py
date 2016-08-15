@@ -62,7 +62,7 @@ for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_
 
 # The evaluator (fitness, cost) function
 eval = Evaluator(reparm_data=reparm_data)
-reparm_data.original_fitness = eval.eval(IL)
+reparm_data.original_fitness = eval.eval(IL)[0]
 print("original_fitness", reparm_data.original_fitness)
 
 #############################################
@@ -119,8 +119,8 @@ for g in range(NGEN):
     for ind, fit in zip(invalid_ind, fitnesses):
         if fit:
             ind.fitness.values = fit
-            if not best or fit < best:
-                best = fit
+            if not best or fit[0] < best:
+                best = fit[0]
                 reparm_data.best_am1_individual.set_pfloats(ind)
                 reparm_data.save()
                 print("NewBest Found:", fit)
