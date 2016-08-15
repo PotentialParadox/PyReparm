@@ -72,13 +72,13 @@ print("original_fitness", original_fitness)
 #         BEGIN DEAP SETUP
 #############################################
 
-creator.create("FitnessMax", base.Fitness, weights=(-1.0, -1.0))
+creator.create("FitnessMax", base.Fitness, weights=(-1.0,))
 creator.create("ParamSet", list, fitness=creator.FitnessMax, best=None)
 
 toolbox = base.Toolbox()
 toolbox.register("individual", generator, IL, IMUTPT)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("mate", tools.cxTwoPoint)
+toolbox.register("mate", tools.cxSimulatedBinary)
 toolbox.register("mutate", mutateset, pert=MUTPT, chance=MUTR)
 toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("evaluate", eval.eval)
@@ -100,7 +100,7 @@ for g in range(NGEN):
     offspring = list(map(toolbox.clone, offspring))
     for child1, child2 in zip(offspring[::2], offspring[1::2]):
         if random.random() < CXPB:
-            toolbox.mate(child1, child2)
+            toolbox.mate(child1, child2, CWD)
             del child1.fitness.values
             del child2.fitness.values
     for mutant in offspring:
