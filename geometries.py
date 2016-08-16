@@ -1,6 +1,7 @@
 import numpy as np
 from coordinates import Coordinates
 import random
+from gaussian_input import GaussianInput
 from copy import deepcopy
 
 
@@ -77,3 +78,19 @@ def temperature_perturbation(reparm_data, opt_coords, normal_modes):
                                   coordinates=m_coordinates)
         coordinates_a.append(coordinates)
         return coordinates_a
+
+
+def face_to_face(reparm_data):
+    fin = open("ftfthiophene.com")
+    file = fin.read()
+    gin = GaussianInput(input_string=file)
+    coordinates = []
+    ng = reparm_data.reparm_input.number_geometries
+    coord = deepcopy(gin.coordinates[0])
+    for _ in range(ng):
+        coords = coord.coordinates
+        for atom in coords[9:18]:
+            atom[3] += 1/ng
+        cl = deepcopy(coord)
+        coordinates.append(cl)
+    return coordinates

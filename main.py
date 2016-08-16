@@ -171,8 +171,8 @@ fout.close()
 #############################################
 #         Begin Analysis
 #############################################
-# anal = Analysis(reparm_data)
-# anal.face_to_face()
+anal = Analysis(reparm_data)
+anal.face_to_face()
 #############################################
 #         End Analysis
 #############################################

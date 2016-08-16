@@ -11,7 +11,7 @@ from copy import deepcopy
 import numpy as np
 import math
 import random
-from geometries import temperature_perturbation
+from geometries import temperature_perturbation, face_to_face
 
 
 class Genesis:
@@ -23,9 +23,9 @@ class Genesis:
         self.coordinates = []
         self.param_group = None
         self.read_user_input()
-        print("Calculating HLT Opt")
-        self.find_hlt_opt_normal()
-        print("Finished HLT Opt")
+        # print("Calculating HLT Opt")
+        # self.find_hlt_opt_normal()
+        # print("Finished HLT Opt")
         self.create_coordinates()
         self.create_initial_individual()
         print("Calculating HLT")
@@ -79,7 +79,8 @@ class Genesis:
         self.normal_modes = gaussian_output.find_normal_modes(gout)
 
     def create_coordinates(self):
-        self.coordinates = temperature_perturbation(self.reparm_data, self.opt_coords, self.normal_modes)
+        # self.coordinates = temperature_perturbation(self.reparm_data, self.opt_coords, self.normal_modes)
+        self.coordinates = face_to_face(self.reparm_data)
 
     def create_initial_individual(self):
         s_header1 = ("#P AM1(Input,Print) CIS(Singlets,NStates=" +
