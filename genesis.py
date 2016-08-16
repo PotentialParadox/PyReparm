@@ -11,6 +11,7 @@ from copy import deepcopy
 import numpy as np
 import math
 import random
+from geometries import temperature_perturbation
 
 
 class Genesis:
@@ -78,77 +79,7 @@ class Genesis:
         self.normal_modes = gaussian_output.find_normal_modes(gout)
 
     def create_coordinates(self):
-        # Our goal is the make the average energy per atom equal
-        # to 3/2 kb T. That means the total energy of the molecule
-        # should be 3/2 kb T Na, where Na is the number of atoms
-        number_atoms = int((len(self.normal_modes[0]) - 1) / 3)
-        kb = 1.380648E-23
-        T = self.reparm_data.reparm_input.temperature
-        Et = 3.0 / 2.0 * kb * float(T) * float(number_atoms)
-
-        # We'll need these in the next loop
-        force_consts = np.zeros(len(self.normal_modes))
-        for i, value in enumerate(self.normal_modes):
-            force_consts[i] = value[0]
-
-        # We now want to distribute this energy to each of the nodes
-        number_modes = len(self.normal_modes)
-        number_geometries = self.reparm_data.reparm_input.number_geometries
-        self.coordinates.append(self.opt_coords)
-        for geom in range(1, number_geometries):
-            # We need to perturb our total energy by a normally
-            # distributed value
-            variance = 2.0 / (3.0 * number_atoms) * Et
-            Et_modified = random.gauss(Et, variance)
-            r_values = np.random.rand(number_modes)
-            normalizer = sum(r_values)
-            r_values = r_values / normalizer
-            energy_per_mode = r_values * Et_modified
-
-            # Given the energy and force constants, we can find
-            # the max displacement using hooks law, E = 1/2 kx^2
-            max_displacements = 2 * energy_per_mode / force_consts
-            max_displacements = np.sqrt(max_displacements) * 1E10
-
-            # Modes can go in either direction, so we need to
-            # randomly assign a negative value to some of them
-            r_direction = np.random.rand(number_modes)
-            for r, rand in enumerate(r_direction):
-                if rand < 0.5:
-                    max_displacements[r] = -max_displacements[r]
-
-            # A diagonal matrix will be more useful
-            m_max_displacements = np.zeros(shape=[number_modes, number_modes])
-            for i, displacement in enumerate(max_displacements):
-                m_max_displacements[i][i] = displacement
-
-            # We now get the coordinate displacement for each of the normal
-            # modes. To do this we create a matrix of normalized coordinate modes
-            # where the rows represent each mode and the columns represent the
-            # coordinates
-            normal_displacement = np.zeros(shape=[number_modes, number_atoms * 3])
-            for i, mode in enumerate(self.normal_modes):
-                for j, value in enumerate(mode):
-                    normal_displacement[i, j - 1] = self.normal_modes[i][j]
-            m_displacement = np.dot(m_max_displacements, normal_displacement)
-
-            # Sum the rows for each column to an array representing the
-            # displacement for each coordinate
-            displacements = np.zeros(number_atoms * 3)
-            for i in range(number_modes):
-                for j in range(number_atoms * 3):
-                    displacements[j] += m_displacement[i][j]
-
-            m_coordinates = deepcopy(self.opt_coords.coordinates)
-            for i, atom in enumerate(m_coordinates):
-                for j in range(1, len(atom)):
-                    index = int(3 * i + j - 1)
-                    m_coordinates[i][j] += displacements[index]
-
-            coordinates = Coordinates(charge=self.opt_coords.charge,
-                                      multiplicity=self.opt_coords.multiplicity,
-                                      coordinates=m_coordinates)
-            self.coordinates.append(coordinates)
+        self.coordinates = temperature_perturbation(self.reparm_data, self.opt_coords, self.normal_modes)
 
     def create_initial_individual(self):
         s_header1 = ("#P AM1(Input,Print) CIS(Singlets,NStates=" +
