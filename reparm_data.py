@@ -26,6 +26,7 @@ class ReparmData():
 
     def save(self):
         number_geometries = self.reparm_input.number_geometries
+        temperature = self.reparm_input.temperature
         number_atoms = len(self.best_am1_individual.inputs[0].coordinates[0].coordinates)
         charge = self.best_am1_individual.inputs[0].coordinates[0].charge
         multiplicity = self.best_am1_individual.inputs[0].coordinates[0].multiplicity
@@ -51,6 +52,7 @@ class ReparmData():
         fout = open("reparm.dat", 'w')
         fout.write(str(self.original_fitness) + "\n")
         fout.write(str(number_geometries) +"\n")
+        fout.write(str(temperature) + "\n")
         fout.write(str(number_atoms) +"\n")
         fout.write(str(charge) +"\n")
         fout.write(str(multiplicity) +"\n")
@@ -79,6 +81,7 @@ class ReparmData():
         if of != "None\n":
             self.original_fitness = float(of)
         number_geometries = int(fin.readline())
+        temperature = int(fin.readline())
         number_atoms = int(fin.readline())
         charge = int(fin.readline())
         multiplicity = int(fin.readline())
