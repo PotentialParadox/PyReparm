@@ -81,7 +81,7 @@ class ReparmData():
         if of != "None\n":
             self.original_fitness = float(of)
         number_geometries = int(fin.readline())
-        temperature = int(fin.readline())
+        temperature = float(fin.readline())
         number_atoms = int(fin.readline())
         charge = int(fin.readline())
         multiplicity = int(fin.readline())
