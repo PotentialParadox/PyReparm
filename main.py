@@ -167,8 +167,7 @@ try:
     fout.write(gout)
     fout.close()
 except TypeError:
-    print("Could not get output file from input:")
-    print(gin_opt.str())
+    print("Could not get output file from input")
 
 #############################################
 #         End Print Out
