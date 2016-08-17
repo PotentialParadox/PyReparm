@@ -161,18 +161,23 @@ fout = open("reparm_best_opt.com", 'w')
 fout.write(gin_opt.str())
 fout.close()
 
-gout = gaussian_single(gin_opt.str())
-fout = open("reparm_best_opt.log", 'w')
-fout.write(gout)
-fout.close()
+try:
+    gout = gaussian_single(gin_opt.str())
+    fout = open("reparm_best_opt.log", 'w')
+    fout.write(gout)
+    fout.close()
+except TypeError:
+    print("Could not get output file from input:")
+    print(gin_opt.str())
+
 #############################################
 #         End Print Out
 #############################################
 #############################################
 #         Begin Analysis
 #############################################
-anal = Analysis(reparm_data)
-anal.face_to_face()
+# anal = Analysis(reparm_data)
+# anal.face_to_face()
 #############################################
 #         End Analysis
 #############################################
