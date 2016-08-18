@@ -2,6 +2,7 @@ import re
 from header import Header
 from coordinates import Coordinates
 from parameters import Parameters
+from zmatrix import ZMatrix
 
 
 class GaussianInput:
@@ -50,13 +51,22 @@ class GaussianInput:
             self.header.append(Header(header_string))
 
     def find_coordinates(self, file_string):
-        p_coordinates = re.compile("\n\s*\d+\s+\d+\s*\n(\s*\S+\s+-?\d+\..+)+")
+        p_coordinates = re.compile("\d\s+\d\n(.*\n)+(?=Method|--Link1|\n)")
         m = re.search(p_coordinates, file_string)
-        if not m:
-            self.coordinates.append(None)
-        else:
-            coordinate_string = m.group(0)
-            self.coordinates.append(Coordinates(from_coordinate_string=coordinate_string))
+        try:
+            zmat = ZMatrix(m.group(0))
+            zmat.str()
+            self.coordinates.append(zmat)
+            return zmat
+        except AttributeError:
+            try:
+                cmat = Coordinates(m.group(0))
+                cmat.str()
+                self.coordinates.append(cmat)
+                return cmat
+            except TypeError:
+                self.coordinates.append(None)
+        return None
 
     def find_parameters(self, file_string):
         p_parameters = re.compile("Method=(.|\n)*(?=--Link1)")
