@@ -22,7 +22,7 @@ class Coordinates:
         coords = []
         for line in m:
             n = [
-                    int(line[0]),
+                    str(line[0]),
                     float(line[1]),
                     float(line[2]),
                     float(line[3])
