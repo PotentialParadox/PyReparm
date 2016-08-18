@@ -167,7 +167,8 @@ try:
     fout.write(gout)
     fout.close()
 except TypeError:
-    print("Could not get output file from input")
+    print("Could not get output file from input,"
+          "most likely, optimization failed to converge")
 
 #############################################
 #         End Print Out
