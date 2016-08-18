@@ -81,7 +81,7 @@ def temperature_perturbation(reparm_data, opt_coords, normal_modes):
 
 
 def face_to_face(reparm_data):
-    fin = open("ftfthiophene.com")
+    fin = open("ftfthiophene.com", 'r')
     file = fin.read()
     gin = GaussianInput(input_string=file)
     coordinates = []
@@ -93,4 +93,17 @@ def face_to_face(reparm_data):
             atom[3] += 1/ng
         cl = deepcopy(coord)
         coordinates.append(cl)
+    return coordinates
+
+
+def dihedral(reparm_data):
+    gin = GaussianInput(open("dithiophene.com", 'r').read())
+    coordinates = []
+    ng = reparm_data.reparm_input.number_geometries
+    coord = deepcopy(gin.coordinates[0])
+    for _ in range(ng):
+        coords = coord.coordinates
+        coords[29] = 500
+        cc = deepcopy(coord)
+        coordinates.append(cc)
     return coordinates
