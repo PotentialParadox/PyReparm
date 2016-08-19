@@ -104,6 +104,7 @@ class ReparmData():
                 param_labels[-1] += val
         param_labels[-1] += "\n"
         params = Parameters(labels=param_labels, p_floats=best_pfloats)
+        print(params.str())
         # Theres an extra newline that isn't read
         empty_newline = fin.readline()
 

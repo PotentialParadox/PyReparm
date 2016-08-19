@@ -2,6 +2,9 @@ import numpy as np
 from coordinates import Coordinates
 import random
 from gaussian_input import GaussianInput
+from gaussian import run_gaussian
+from parameter_group import ParameterGroup
+from header import Header
 from copy import deepcopy
 
 
@@ -97,13 +100,22 @@ def face_to_face(reparm_data):
 
 
 def dihedral(reparm_data):
+    # Import a zmatrix input, rotate, then convert to cartesian
     gin = GaussianInput(open("dithiophene.com", 'r').read())
-    coordinates = []
     ng = reparm_data.reparm_input.number_geometries
-    coord = deepcopy(gin.coordinates[0])
-    for _ in range(ng):
-        coords = coord.coordinates
-        coords[29] = 500
-        cc = deepcopy(coord)
-        coordinates.append(cc)
+    coord = gin.coordinates[0]
+    inputs = []
+    for i in range(ng):
+        if i > 0:
+            coords = coord.coordinates
+            coords[29] += 180 / (ng - 1)
+            coords[57] += 180 / (ng - 1)
+        # print(coord.str())
+        ic = deepcopy(gin)
+        inputs.append(ic)
+    param_group = ParameterGroup(inputs=inputs)
+    gouts = run_gaussian(param_group)
+    coordinates = []
+    for i in gouts:
+        coordinates.append(i.opt_coords)
     return coordinates
