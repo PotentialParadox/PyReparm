@@ -79,9 +79,12 @@ class Genesis:
         self.normal_modes = gaussian_output.find_normal_modes(gout)
 
     def create_coordinates(self):
-        # self.coordinates = geometries.temperature_perturbation(self.reparm_data, self.opt_coords, self.normal_modes)
-        self.coordinates.extend(geometries.face_to_face(self.reparm_data))
-        self.coordinates.extend(geometries.dihedral(self.reparm_data))
+        if 0 in self.reparm_data.reparm_input.training_sets:
+            self.coordinates = geometries.temperature_perturbation(self.reparm_data, self.opt_coords, self.normal_modes)
+        if 1 in self.reparm_data.reparm_input.training_sets:
+            self.coordinates.extend(geometries.face_to_face(self.reparm_data))
+        if 2 in self.reparm_data.reparm_input.training_sets:
+            self.coordinates.extend(geometries.dihedral(self.reparm_data))
 
     def create_initial_individual(self):
         s_header1 = ("#P AM1(Input,Print) CIS(Singlets,NStates=" +
