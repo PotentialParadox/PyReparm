@@ -31,8 +31,8 @@ class ReparmData():
         charge = self.best_am1_individual.inputs[0].coordinates[0].charge
         multiplicity = self.best_am1_individual.inputs[0].coordinates[0].multiplicity
         inputs = self.best_am1_individual.inputs
-        parameter_floats = self.best_am1_individual.inputs[0].parameters[0].p_floats
-        parameter_labels = self.best_am1_individual.inputs[0].parameters[0].labels
+        parameters = self.best_am1_individual.inputs[0].parameters[0]
+
 
         coordinates = []
         for i in inputs:
@@ -56,15 +56,6 @@ class ReparmData():
         fout.write(str(number_atoms) +"\n")
         fout.write(str(charge) +"\n")
         fout.write(str(multiplicity) +"\n")
-        fout.write(str(len(parameter_floats)) +"\n")
-        for i in parameter_floats:
-            fout.write(str(i) +"\n")
-        fout.write(str(len(parameter_labels)) +"\n")
-        for i in parameter_labels:
-            if i != "\n":
-                fout.write(i + "\n")
-            else:
-                fout.writable("\\n\n")
         fout.write(str(len(coordinates)) +"\n")
         for i in coordinates:
             fout.write(str(i) +"\n")
@@ -74,6 +65,7 @@ class ReparmData():
         fout.write(str(len(dipoles)) +"\n")
         for i in dipoles:
             fout.write(str(i) +"\n")
+        fout.write(parameters.str())
 
     def load(self):
         fin = open("reparm.dat", 'r')
@@ -85,28 +77,6 @@ class ReparmData():
         number_atoms = int(fin.readline())
         charge = int(fin.readline())
         multiplicity = int(fin.readline())
-        vector_size = int(fin.readline())
-        best_pfloats = []
-        for _ in range(vector_size):
-            best_pfloats.append(float(fin.readline()))
-
-        # Read the parameters
-        vector_size = int(fin.readline())
-        param_labels = []
-        i = 0
-        while i < vector_size:
-            val = str(fin.readline())
-            if val != '\n':
-                val = val.rstrip('\n')
-                param_labels.append(val)
-                i += 1
-            else:
-                param_labels[-1] += val
-        param_labels[-1] += "\n"
-        params = Parameters(labels=param_labels, p_floats=best_pfloats)
-        print(params.str())
-        # Theres an extra newline that isn't read
-        empty_newline = fin.readline()
 
         # Read the cooordinates
         vector_size = int(fin.readline())
@@ -122,16 +92,6 @@ class ReparmData():
             coordinates.append(Coordinates(charge=charge, multiplicity=multiplicity,
                                            coordinates=coord_data))
 
-        # Have now loaded all the info for the best am1 individual
-        header_string = "#P AM1(Input,Print)\n\nAM1\n"
-        header = Header(header_string)
-        inputs = []
-        for i in range(number_geometries):
-            gin = GaussianInput(header=header, coordinates=coordinates[i],
-                                parameters=params)
-            inputs.append(gin)
-        self.best_am1_individual = ParameterGroup(inputs=inputs)
-
         # Read the energies
         vector_size = int(fin.readline())
         energies = []
@@ -143,6 +103,21 @@ class ReparmData():
         dipoles = []
         for _ in range(vector_size):
             dipoles.append(float(fin.readline()))
+
+        # Read the parameters
+        param_s = fin.read()
+        fin.close()
+        params = Parameters(from_parameter_string=param_s)
+
+        # Have now loaded all the info for the best am1 individual
+        header_string = "#P AM1(Input,Print)\n\nAM1\n"
+        header = Header(header_string)
+        inputs = []
+        for i in range(number_geometries):
+            gin = GaussianInput(header=header, coordinates=coordinates[i],
+                                parameters=params)
+            inputs.append(gin)
+        self.best_am1_individual = ParameterGroup(inputs=inputs)
 
         # Make the HighLevelTheory
         hlts = []
