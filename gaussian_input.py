@@ -60,7 +60,7 @@ class GaussianInput:
             zmat.str()
             self.coordinates.append(zmat)
             return zmat
-        except AttributeError:
+        except (AttributeError, IndexError):
             try:
                 cmat = Coordinates(m.group(0))
                 cmat.str()
