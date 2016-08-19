@@ -12,7 +12,7 @@ class Parameters:
             self.p_floats=p_floats
 
     def __find_labels(self, parameter_string):
-        p_label = re.compile("(\S+ *\n*)|\n")
+        p_label = re.compile("(\S+\s*)|\n")
         m = re.findall(p_label, parameter_string)
         if m:
             return m

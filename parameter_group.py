@@ -6,7 +6,7 @@ class ParameterGroup:
         if inputs:
             input_list = []
             for i in inputs:
-                input_list.append(GaussianInput(i.str()))
+                input_list.append(GaussianInput.copy(i))
             self.inputs = input_list
         if outputs:
             self.outputs = list(outputs)

@@ -9,12 +9,9 @@ from parameter_group import ParameterGroup
 import gaussian_output
 from gaussian_input import GaussianInput
 from gaussian import gaussian_single
-from reparm_input import ReparmInput
 from header import Header
 from reparm_data import ReparmData
 from genesis import Genesis
-from analysis import Analysis
-
 
 #############################################
 #         BEGIN USER INPUT
@@ -27,16 +24,13 @@ if reparm_data.reparm_input.should_continue:
 else:
     Genesis(reparm_data=reparm_data)
     reparm_data.save()
-
-#############################################
-#         END USER INPUT
-#############################################
-
+############################################
+#        END USER INPUT
+############################################
 
 #############################################
 #         BEGIN USER INPUT
 #############################################
-
 # Number of Generation
 NGEN = reparm_data.reparm_input.number_generations
 # PopulationSize

@@ -2,6 +2,9 @@ import numpy as np
 from coordinates import Coordinates
 import random
 from gaussian_input import GaussianInput
+from gaussian import run_gaussian
+from parameter_group import ParameterGroup
+from header import Header
 from copy import deepcopy
 
 
@@ -81,7 +84,7 @@ def temperature_perturbation(reparm_data, opt_coords, normal_modes):
 
 
 def face_to_face(reparm_data):
-    fin = open("ftfthiophene.com")
+    fin = open("ftfthiophene.com", 'r')
     file = fin.read()
     gin = GaussianInput(input_string=file)
     coordinates = []
@@ -93,4 +96,26 @@ def face_to_face(reparm_data):
             atom[3] += 1/ng
         cl = deepcopy(coord)
         coordinates.append(cl)
+    return coordinates
+
+
+def dihedral(reparm_data):
+    # Import a zmatrix input, rotate, then convert to cartesian
+    gin = GaussianInput(open("dithiophene.com", 'r').read())
+    ng = reparm_data.reparm_input.number_geometries
+    coord = gin.coordinates[0]
+    inputs = []
+    for i in range(ng):
+        if i > 0:
+            coords = coord.coordinates
+            coords[29] += 180 / (ng - 1)
+            coords[57] += 180 / (ng - 1)
+        # print(coord.str())
+        ic = deepcopy(gin)
+        inputs.append(ic)
+    param_group = ParameterGroup(inputs=inputs)
+    gouts = run_gaussian(param_group)
+    coordinates = []
+    for i in gouts:
+        coordinates.append(i.opt_coords)
     return coordinates

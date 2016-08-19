@@ -1,5 +1,6 @@
 import re
 from header import Header
+from copy import deepcopy
 from coordinates import Coordinates
 from parameters import Parameters
 from zmatrix import ZMatrix
@@ -51,14 +52,15 @@ class GaussianInput:
             self.header.append(Header(header_string))
 
     def find_coordinates(self, file_string):
-        p_coordinates = re.compile("\d\s+\d\n(.*\n)+(?=Method|--Link1|\n)")
+        p_coordinates = re.compile("\d\s+\d\n(.*\n)+?(?=Method|--Link1|$)")
         m = re.search(p_coordinates, file_string)
+        # print(m.group(0))
         try:
             zmat = ZMatrix(m.group(0))
             zmat.str()
             self.coordinates.append(zmat)
             return zmat
-        except AttributeError:
+        except (AttributeError, IndexError):
             try:
                 cmat = Coordinates(m.group(0))
                 cmat.str()
@@ -89,3 +91,6 @@ class GaussianInput:
     def clear_coordinates(self):
         for i in self.coordinates:
             i.coordinates = None
+
+    def copy(self):
+        return deepcopy(self)
