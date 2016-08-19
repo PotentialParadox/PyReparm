@@ -81,7 +81,7 @@ class Genesis:
     def create_coordinates(self):
         # self.coordinates = geometries.temperature_perturbation(self.reparm_data, self.opt_coords, self.normal_modes)
         self.coordinates.extend(geometries.face_to_face(self.reparm_data))
-        # self.coordinates.extend(geometries.dihedral(self.reparm_data))
+        self.coordinates.extend(geometries.dihedral(self.reparm_data))
 
     def create_initial_individual(self):
         s_header1 = ("#P AM1(Input,Print) CIS(Singlets,NStates=" +
@@ -104,7 +104,7 @@ class Genesis:
         gouts = run_gaussian(parameter_group=param_group)
         param_group.outputs = gouts
         self.param_group = param_group
-        fout = open("xyz_str.xyz", 'w')
+        fout = open("training.xyz", 'w')
         fout.write(self.param_group.xyz_str())
         fout.close()
         self.reparm_data.best_am1_individual = param_group
