@@ -112,12 +112,14 @@ for g in range(NGEN):
             fitnesses.append(None)
     for ind, fit in zip(invalid_ind, fitnesses):
         if fit:
+            reparm_data.observations.append(list(ind))
+            reparm_data.targets.append(float(fit[0]))
             ind.fitness.values = fit
             if not best or fit[0] < best:
                 best = fit[0]
                 reparm_data.best_am1_individual.set_pfloats(ind)
-                reparm_data.save()
                 print("NewBest Found:", fit)
+    reparm_data.save()
     pop[:] = offspring
 #############################################
 #         End Genetic Algorithm
@@ -175,3 +177,5 @@ except TypeError:
 #############################################
 #         End Analysis
 #############################################
+print("Size of observations", len(reparm_data.observations))
+print("Size of targets", len(reparm_data.targets))
