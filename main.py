@@ -12,6 +12,9 @@ from gaussian import gaussian_single
 from header import Header
 from reparm_data import ReparmData
 from genesis import Genesis
+import numpy as np
+from sklearn import svm
+from scipy.optimize import minimize
 
 #############################################
 #         BEGIN USER INPUT
@@ -170,6 +173,22 @@ except TypeError:
 #         End Print Out
 #############################################
 #############################################
+#         Begin ScikitLearn
+#############################################
+X = np.array(reparm_data.observations)
+y = np.array(reparm_data.targets)
+clf = svm.SVR()
+clf.fit(X, y)
+initial_guess = np.array(IL)
+initial_guess = initial_guess.reshape(1, -1)
+print(initial_guess.shape)
+# min_params = minimize(clf.predict, initial_guess)
+# print(min_params.x)
+#############################################
+#         End ScikitLearn
+#############################################
+
+#############################################
 #         Begin Analysis
 #############################################
 # anal = Analysis(reparm_data)
@@ -177,5 +196,3 @@ except TypeError:
 #############################################
 #         End Analysis
 #############################################
-print("Size of observations", len(reparm_data.observations))
-print("Size of targets", len(reparm_data.targets))
