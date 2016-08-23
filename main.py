@@ -93,38 +93,38 @@ best = reparm_data.original_fitness
 #############################################
 #         BEGIN GENETIC ALGORITHM
 #############################################
-# for g in range(NGEN):
-#     print("Starting gen:", g)
-#     offspring = toolbox.select(pop, len(pop))
-#     offspring = list(map(toolbox.clone, offspring))
-#     for child1, child2 in zip(offspring[::2], offspring[1::2]):
-#         if random.random() < CXPB:
-#             toolbox.mate(child1, child2, CWD)
-#             del child1.fitness.values
-#             del child2.fitness.values
-#     for mutant in offspring:
-#         if random.random() < MUTPB:
-#             toolbox.mutate(mutant)
-#             del mutant.fitness.values
-#     invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-#     fitnesses = []
-#     for i in invalid_ind:
-#         try:
-#             fitness = toolbox.evaluate(i)
-#             fitnesses.append(fitness)
-#         except TypeError:
-#             fitnesses.append(None)
-#     for ind, fit in zip(invalid_ind, fitnesses):
-#         if fit:
-#             reparm_data.observations.append(list(ind))
-#             reparm_data.targets.append(float(fit[0]))
-#             ind.fitness.values = fit
-#             if not best or fit[0] < best:
-#                 best = fit[0]
-#                 reparm_data.best_am1_individual.set_pfloats(ind)
-#                 print("NewBest Found:", fit)
-#     reparm_data.save()
-#     pop[:] = offspring
+for g in range(NGEN):
+    print("Starting gen:", g)
+    offspring = toolbox.select(pop, len(pop))
+    offspring = list(map(toolbox.clone, offspring))
+    for child1, child2 in zip(offspring[::2], offspring[1::2]):
+        if random.random() < CXPB:
+            toolbox.mate(child1, child2, CWD)
+            del child1.fitness.values
+            del child2.fitness.values
+    for mutant in offspring:
+        if random.random() < MUTPB:
+            toolbox.mutate(mutant)
+            del mutant.fitness.values
+    invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+    fitnesses = []
+    for i in invalid_ind:
+        try:
+            fitness = toolbox.evaluate(i)
+            fitnesses.append(fitness)
+        except TypeError:
+            fitnesses.append(None)
+    for ind, fit in zip(invalid_ind, fitnesses):
+        if fit:
+            reparm_data.observations.append(list(ind))
+            reparm_data.targets.append(float(fit[0]))
+            ind.fitness.values = fit
+            if not best or fit[0] < best:
+                best = fit[0]
+                reparm_data.best_am1_individual.set_pfloats(ind)
+                print("NewBest Found:", fit)
+    reparm_data.save()
+    pop[:] = offspring
 #############################################
 #         End Genetic Algorithm
 #############################################
@@ -182,11 +182,15 @@ clf = svm.SVR()
 clf.fit(X, y)
 initial_guess = np.array(IL)
 fun = lambda x: clf.predict(x.reshape(1, -1))
+print("Using", len(y), "to predict best parameters")
 min_params = minimize(fun, initial_guess)
 params = min_params.x.tolist()
 skl_best = deepcopy(reparm_data.best_am1_individual)
 skl_best.set_pfloats(params)
 open("skl_best.com", 'w').write(skl_best.inputs[0].str())
+skl_fitness = eval.eval(params)
+if skl_fitness:
+    print("skl_fitness:", skl_fitness[0])
 
 #############################################
 #         End ScikitLearn
