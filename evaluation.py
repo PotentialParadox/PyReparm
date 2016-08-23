@@ -20,7 +20,8 @@ class Evaluator:
             return None
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
-        return energy_fitness,
+        total_fitness = energy_fitness
+        return total_fitness, energy_fitness, dipole_fitness
 
     def energy_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs
