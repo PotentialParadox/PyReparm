@@ -18,6 +18,9 @@ class ReparmData():
         self.high_level_outputs = None
         # This is of type param_group
         self.best_am1_individual = None
+        # Store Jobs for scikit-learn
+        self.observations = []
+        self.targets = []
 
     def copy(self):
         return copy.deepcopy(self)
@@ -33,4 +36,6 @@ class ReparmData():
         self.original_fitness = lf.original_fitness
         self.high_level_outputs = lf.high_level_outputs
         self.best_am1_individual = lf.best_am1_individual
+        self.observations = lf.observations
+        self.targets = lf.targets
 

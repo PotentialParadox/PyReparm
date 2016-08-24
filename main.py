@@ -12,6 +12,14 @@ from gaussian import gaussian_single
 from header import Header
 from reparm_data import ReparmData
 from genesis import Genesis
+import numpy as np
+from scipy.optimize import minimize
+from copy import deepcopy
+from sklearn.cross_validation import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn import svm
+from sklearn.linear_model import RidgeCV
+from sklearn.ensemble import RandomForestRegressor
 
 #############################################
 #         BEGIN USER INPUT
@@ -67,7 +75,7 @@ print("original_fitness", reparm_data.original_fitness)
 #         BEGIN DEAP SETUP
 #############################################
 
-creator.create("FitnessMax", base.Fitness, weights=(-1.0,))
+creator.create("FitnessMax", base.Fitness, weights=(-1.0, 0, 0))
 creator.create("ParamSet", list, fitness=creator.FitnessMax, best=None)
 
 toolbox = base.Toolbox()
@@ -112,12 +120,15 @@ for g in range(NGEN):
             fitnesses.append(None)
     for ind, fit in zip(invalid_ind, fitnesses):
         if fit:
+            reparm_data.observations.append(list(ind))
+            target = [float(i) for i in fit]
+            reparm_data.targets.append(target)
             ind.fitness.values = fit
             if not best or fit[0] < best:
                 best = fit[0]
                 reparm_data.best_am1_individual.set_pfloats(ind)
-                reparm_data.save()
                 print("NewBest Found:", fit)
+    reparm_data.save()
     pop[:] = offspring
 #############################################
 #         End Genetic Algorithm
@@ -167,6 +178,41 @@ except TypeError:
 #############################################
 #         End Print Out
 #############################################
+#############################################
+#         Begin ScikitLearn
+#############################################
+# # Preprocessor
+# targets = np.array(reparm_data.targets)
+# X = np.array(reparm_data.observations)
+# y = targets[:, 0]  # 0, 1, 2 for total, energy, and dipole
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+# stdsc = StandardScaler()
+# X_train_std = stdsc.fit_transform(X_train)
+# X_test_std = stdsc.transform(X_test)
+#
+# # Training
+# clf = svm.SVR(C=1.3, kernel='rbf')
+# # clf = RandomForestRegressor(n_estimators=20)
+# clf.fit(X_train, y_train)
+# print("Using {} samples with fitness score {}".format(len(y), clf.score(X_test, y_test)))
+#
+# initial_guess = np.array(IL)
+# fun = lambda x: clf.predict(stdsc.transform(x.reshape(1, -1)))
+# print("Predicting best parameters")
+# min_params = (minimize(fun, initial_guess)).x
+# stdsc.inverse_transform(min_params)
+# params = min_params.tolist()
+# skl_best = deepcopy(reparm_data.best_am1_individual)
+# skl_best.set_pfloats(params)
+# open("skl_best.com", 'w').write(skl_best.inputs[0].str())
+# skl_fitness = eval.eval(params)
+# if skl_fitness:
+#     print("skl_fitness:", skl_fitness)
+
+#############################################
+#         End ScikitLearn
+#############################################
+
 #############################################
 #         Begin Analysis
 #############################################
