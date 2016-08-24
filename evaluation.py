@@ -1,4 +1,5 @@
 from reparm_data import ReparmData
+import numpy as np
 import math
 from random import random
 from copy import deepcopy
@@ -6,8 +7,9 @@ from gaussian import run_gaussian
 
 
 class Evaluator:
-    def __init__(self, reparm_data = None, goal = None):
+    def __init__(self, reparm_data=None, goal=None):
         self.reparm_data = ReparmData.reference(reparm_data)
+        self.std = None
         self.goal = goal
 
     # Evaluates an individual
@@ -20,7 +22,13 @@ class Evaluator:
             return None
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
-        total_fitness = energy_fitness
+        current = [energy_fitness, dipole_fitness]
+        self.reparm_data.targets.append(current)
+        self.update_std()
+        self.update_best()
+        std_current = self.standardize(current)
+        total_fitness = np.sum(np.square(std_current))
+
         return total_fitness, energy_fitness, dipole_fitness
 
     def energy_fitness(self, am1):
@@ -55,3 +63,19 @@ class Evaluator:
 
         return sum_of_squares
 
+    def update_std(self):
+        if len(self.reparm_data.targets) > 2:
+            tgs = np.array(self.reparm_data.targets)
+            self.std = np.std(tgs, axis=0)
+
+    def standardize(self, list_object):
+        if self.std is not None:
+            return np.array(list_object) / self.std
+        return np.array(list_object)
+
+    def update_best(self):
+        if self.reparm_data.best_fitness is not None and self.std is not None:
+            print("starting with", self.reparm_data.best_fitness)
+            std_best = self.standardize(self.reparm_data.best_fitness[1:])
+            self.reparm_data.best_fitness[0] = np.sum(np.square(std_best))
+            print("best is now", self.reparm_data.best_fitness)

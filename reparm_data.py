@@ -13,6 +13,7 @@ from header import Header
 class ReparmData():
     def __init__(self, file_name):
         self.reparm_input = ReparmInput(file_name)
+        self.best_fitness = None
         self.original_fitness = None
         # This is a list of gaussian outputs
         self.high_level_outputs = None
@@ -33,6 +34,7 @@ class ReparmData():
 
     def load(self):
         lf = pickle.load(open("reparm.dat", 'rb'))
+        self.best_fitness = lf.best_fitness
         self.original_fitness = lf.original_fitness
         self.high_level_outputs = lf.high_level_outputs
         self.best_am1_individual = lf.best_am1_individual

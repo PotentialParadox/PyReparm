@@ -64,8 +64,16 @@ for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_
 
 # The evaluator (fitness, cost) function
 eval = Evaluator(reparm_data=reparm_data)
-reparm_data.original_fitness = eval.eval(IL)[0]
+if reparm_data.best_fitness is None:
+    reparm_data.best_fitness = list(eval.eval(IL))
+    reparm_data.original_fitness = deepcopy(reparm_data.best_fitness)
+else:
+    reparm_data.best_fitness = list(eval.eval(IL))
+
 print("original_fitness", reparm_data.original_fitness)
+print("starting at", reparm_data.best_fitness)
+
+reparm_data.best_fitness = reparm_data.original_fitness
 
 #############################################
 #         END USER INPUT
@@ -87,8 +95,6 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("evaluate", eval.eval)
 
 pop = toolbox.population(n=PSIZE)
-
-best = reparm_data.original_fitness
 
 #############################################
 #         END DEAP SETUP
@@ -121,13 +127,11 @@ for g in range(NGEN):
     for ind, fit in zip(invalid_ind, fitnesses):
         if fit:
             reparm_data.observations.append(list(ind))
-            target = [float(i) for i in fit]
-            reparm_data.targets.append(target)
             ind.fitness.values = fit
-            if not best or fit[0] < best:
-                best = fit[0]
+            if not reparm_data.best_fitness or fit[0] < reparm_data.best_fitness[0]:
+                reparm_data.best_fitness = list(fit)
                 reparm_data.best_am1_individual.set_pfloats(ind)
-                print("NewBest Found:", fit)
+                print("NewBest Found:", reparm_data.best_fitness)
     reparm_data.save()
     pop[:] = offspring
 #############################################
