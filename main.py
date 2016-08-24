@@ -73,7 +73,6 @@ else:
 print("original_fitness", reparm_data.original_fitness)
 print("starting at", reparm_data.best_fitness)
 
-reparm_data.best_fitness = reparm_data.original_fitness
 
 #############################################
 #         END USER INPUT
@@ -122,16 +121,14 @@ for g in range(NGEN):
         try:
             fitness = toolbox.evaluate(i)
             fitnesses.append(fitness)
+            reparm_data.observations.append(list(i))
+            i.fitness.values = fitness
+            if not reparm_data.best_fitness or fitness[0] < reparm_data.best_fitness[0]:
+                reparm_data.best_fitness = list(fitness)
+                reparm_data.best_am1_individual.set_pfloats(i)
+                print("NewBest Found:", reparm_data.best_fitness)
         except TypeError:
             fitnesses.append(None)
-    for ind, fit in zip(invalid_ind, fitnesses):
-        if fit:
-            reparm_data.observations.append(list(ind))
-            ind.fitness.values = fit
-            if not reparm_data.best_fitness or fit[0] < reparm_data.best_fitness[0]:
-                reparm_data.best_fitness = list(fit)
-                reparm_data.best_am1_individual.set_pfloats(ind)
-                print("NewBest Found:", reparm_data.best_fitness)
     reparm_data.save()
     pop[:] = offspring
 #############################################

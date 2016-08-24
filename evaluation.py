@@ -75,7 +75,7 @@ class Evaluator:
 
     def update_best(self):
         if self.reparm_data.best_fitness is not None and self.std is not None:
-            print("starting with", self.reparm_data.best_fitness)
+            # print("starting with", self.reparm_data.best_fitness)
             std_best = self.standardize(self.reparm_data.best_fitness[1:])
             self.reparm_data.best_fitness[0] = np.sum(np.square(std_best))
-            print("best is now", self.reparm_data.best_fitness)
+            # print("best is now", self.reparm_data.best_fitness)
