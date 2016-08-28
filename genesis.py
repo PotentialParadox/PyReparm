@@ -105,7 +105,8 @@ class Genesis:
             gin1.link(gin2)
             inputs.append(gin1)
         param_group = ParameterGroup(inputs=inputs)
-        gouts = run_gaussian(parameter_group=param_group)
+        nproc = self.reparm_data.reparm_input.number_processors
+        gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
         param_group.outputs = gouts
         self.param_group = param_group
         fout = open("training.xyz", 'w')
@@ -134,5 +135,5 @@ class Genesis:
             hlt_input.link(hlt_freq)
             hlt_inputs.append(hlt_input)
         hlt_group = ParameterGroup(inputs=hlt_inputs)
-        np = self.reparm_data.reparm_input.number_processors
-        self.reparm_data.high_level_outputs = run_gaussian(parameter_group=hlt_group, number_processors=np)
+        nproc = self.reparm_data.reparm_input.number_processors
+        self.reparm_data.high_level_outputs = run_gaussian(parameter_group=hlt_group, number_processors=nproc)
