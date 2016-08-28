@@ -21,8 +21,13 @@ class Coordinates:
         m = re.findall(p_coord, coordinate_string)
         coords = []
         for line in m:
+            atom_type = ''
+            try:
+                atom_type = periodic_table(line[0])
+            except KeyError:
+                atom_type = line[0]
             n = [
-                    str(line[0]),
+                    str(atom_type),
                     float(line[1]),
                     float(line[2]),
                     float(line[3])
@@ -34,7 +39,7 @@ class Coordinates:
         coord_str = str(self.charge) + " " + str(self.multiplicity) + "\n"
         if self.coordinates:
             for i in self.coordinates:
-                coord_str += str(i[0])
+                coord_str += "{:>2}".format(i[0])
                 for j in range(1, 4):
                         coord_str += "{: 19.6f}".format(i[j])
                 coord_str += "\n"
@@ -44,8 +49,12 @@ class Coordinates:
     def xyz_string(self):
         ss = str(len(self.coordinates)) + "\nXYZ\n"
         for i in self.coordinates:
-            ss += str(i[0])
-            for j in range(1,4):
-                ss += "{: 19.6f}".format(i[j])
-            ss += "\n"
+            ss += "{:>2}{: 19.6f}{: 19.6f}{: 19.6f}\n".format(i[0], i[1], i[2], i[3])
         return ss
+
+
+def periodic_table(atomic_number):
+    p_table = ({'1': 'H', '2': 'He', '3': 'Li', '4': 'Be', '5': 'B',
+                '6': 'C', '16': 'S'})
+    return p_table[atomic_number]
+
