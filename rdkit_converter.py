@@ -1,20 +1,27 @@
-import numpy as np
-import rdkit
-
-from gaussian_input import GaussianInput
+from rdkit import Chem
 import openbabel
+from gaussian_input import GaussianInput
 
-obConversion = openbabel.OBConversion()
-obConversion.SetInAndOutFormats("xyz", "mol")
+def reparm_to_rdkit(coordinates):
+    obConversion = openbabel.OBConversion()
+    obConversion.SetInAndOutFormats("xyz", "mol")
+    xyz_str = coordinates.xyz_string()
 
-gin = GaussianInput(open("test.com", 'r').read())
-coordinates = gin.coordinates[0]
-xyz_str = coordinates.xyz_string()
-print(xyz_str)
+    xyz = openbabel.OBMol()
+    obConversion.ReadString(xyz, xyz_str)
 
-xyz = openbabel.OBMol()
-obConversion.ReadString(xyz, xyz_str)
+    mol = obConversion.WriteString(xyz)
+    return Chem.MolFromMolBlock(mol)
 
-mol = obConversion.WriteString(xyz)
+def rdkit_to_reparm(rd):
+    obConversion = openbabel.OBConversion()
+    obConversion.SetInAndOutFormats("mol", "com")
+    mol_str = Chem.MolToMolBlock(rd)
 
+    mol = openbabel.OBMol()
+    obConversion.ReadString(mol, mol_str)
+
+    gin_str = obConversion.WriteString(mol)
+    gin = GaussianInput(gin_str)
+    return gin.coordinates[0]
 
