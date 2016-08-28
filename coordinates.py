@@ -42,9 +42,10 @@ class Coordinates:
         return coord_str
 
     def xyz_string(self):
-        ss = "\n"
-        ss += str(len(self.coordinates)) + "\n"
+        ss = str(len(self.coordinates)) + "\nXYZ\n"
         for i in self.coordinates:
-            ss += str(i[0]) + " " + str(i[1]) + " "
-            ss += str(i[2]) + " " + str(i[3]) + "\n"
+            ss += str(i[0])
+            for j in range(1,4):
+                ss += "{: 19.6f}".format(i[j])
+            ss += "\n"
         return ss
