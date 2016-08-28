@@ -18,7 +18,7 @@ class Evaluator:
         hlt = deepcopy(self.reparm_data.high_level_outputs)
         param_group.set_pfloats(am1)
         nproc = self.reparm_data.reparm_input.number_processors
-        gouts = run_gaussian(parameter_group=param_group, number_processors=np)
+        gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
         if not gouts:
             return None
         energy_fitness = self.energy_fitness(gouts)
