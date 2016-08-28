@@ -49,3 +49,6 @@ class ZMatrix(Coordinates):
             except IndexError:
                 coord_str += "\n" + coords[-1]
         return coord_str
+
+    def xyz_string(self):
+        return None
