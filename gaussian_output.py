@@ -79,7 +79,8 @@ def find_opt_coordinates(file_string):
     coordinates = []
     for i in m:
         coordinates.append([int(i[0]), float(i[1]), float(i[2]), float(i[3])])
-    return Coordinates(charge=charge, multiplicity=multiplicity, coordinates=coordinates)
+    coords = Coordinates(charge=charge, multiplicity=multiplicity, coordinates=coordinates)
+    return Coordinates(coords.str())
 
 
 # find_normal_modes
