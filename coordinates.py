@@ -36,10 +36,7 @@ class Coordinates:
             for i in self.coordinates:
                 coord_str += str(i[0])
                 for j in range(1, 4):
-                    if i[j] < 0:
-                        coord_str += 7 * " " + "{0:.6f}".format(i[j])
-                    else:
-                        coord_str += 8 * " " + "{0:.6f}".format(i[j])
+                        coord_str += "{: 19.6f}".format(i[j])
                 coord_str += "\n"
             coord_str += "\n"
         return coord_str
