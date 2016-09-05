@@ -28,7 +28,9 @@ class Evaluator:
         self.update_std()
         self.update_best()
         std_current = self.standardize(current)
-        total_fitness = np.sum(np.square(std_current))
+        print('current', current)
+        print('std', std_current)
+        total_fitness = np.sum(std_current**2)
 
         return total_fitness, energy_fitness, dipole_fitness
 
@@ -78,5 +80,5 @@ class Evaluator:
         if self.reparm_data.best_fitness is not None and self.std is not None:
             # print("starting with", self.reparm_data.best_fitness)
             std_best = self.standardize(self.reparm_data.best_fitness[1:])
-            self.reparm_data.best_fitness[0] = np.sum(np.square(std_best))
+            self.reparm_data.best_fitness[0] = np.sum(std_best**2)
             # print("best is now", self.reparm_data.best_fitness)
