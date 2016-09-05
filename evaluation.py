@@ -24,7 +24,8 @@ class Evaluator:
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
         current = [energy_fitness, dipole_fitness]
-        self.reparm_data.targets.append(current)
+        if self.aebo(current):
+            self.reparm_data.targets.append(current)
         self.update_std()
         self.update_best()
         std_current = self.standardize(current)
@@ -82,3 +83,12 @@ class Evaluator:
             std_best = self.standardize(self.reparm_data.best_fitness[1:])
             self.reparm_data.best_fitness[0] = np.sum(std_best**2)
             # print("best is now", self.reparm_data.best_fitness)
+
+    # All elements below original
+    def aebo(self, elements):
+        for i, l in zip(elements, self.reparm_data.original_fitness[1:]):
+            if i > l:
+                return False
+        return True
+
+
