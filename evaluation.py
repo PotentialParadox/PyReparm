@@ -86,6 +86,10 @@ class Evaluator:
 
     # All elements below original
     def aebo(self, elements):
+        if self.reparm_data.original_fitness is None:
+            return True
+        if elements is None:
+            return False
         for i, l in zip(elements, self.reparm_data.original_fitness[1:]):
             if i > l:
                 return False
