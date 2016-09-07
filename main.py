@@ -219,8 +219,8 @@ except TypeError:
 #############################################
 #         Begin Analysis
 #############################################
-# anal = Analysis(reparm_data)
-# anal.trithiophene()
+anal = Analysis(reparm_data)
+anal.trithiophene()
 #############################################
 #         End Analysis
 #############################################
