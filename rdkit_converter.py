@@ -37,18 +37,3 @@ def rdkit_to_reparm(rd):
     gin_str = obConversion.WriteString(mol)
     gin = GaussianInput(gin_str)
     return gin.coordinates[0]
-
-gin = GaussianInput(open('trithiophene.com', 'r').read())
-rep_coords = gin.coordinates[0]
-rdk_coords = reparm_to_rdkit(rep_coords)
-# print(Chem.MolToMolBlock(rdk_coords))
-AllChem.EmbedMolecule(rdk_coords)
-AllChem.UFFOptimizeMolecule(rdk_coords)
-for atom in rdk_coords.GetAtoms():
-    print(atom.GetAtomicNum())
-c = rdk_coords.GetConformer()
-SetDihedralDeg(c, 5, 4, 2, 3, 90)
-rep_coords = rdkit_to_reparm(rdk_coords)
-
-header = Header("#P am1\n\nam1\n")
-open('rdkit.com', 'w').write(GaussianInput(header=header, coordinates=rep_coords).str())
