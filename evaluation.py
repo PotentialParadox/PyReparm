@@ -37,18 +37,19 @@ class Evaluator:
 
     def energy_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs
-        hlt_energy_differences = []
-        for i in range(1, len(hlt)):
-            hlt_energy_differences.append(hlt[i].ground_energy - hlt[i-1].ground_energy)
+        ng = len(hlt)
+        hlt_energy_differences = np.zeros((ng, ng))
+        for i in range(ng):
+            for j in range(ng):
+                hlt_energy_differences[i][j] = hlt[i].ground_energy - hlt[j].ground_energy
 
-        am1_energy_differences = []
-        for i in range(1, len(am1)):
-            am1_energy_differences.append(am1[i].ground_energy - am1[i-1].ground_energy)
+        am1_energy_differences = np.zeros((ng, ng))
+        for i in range(ng):
+            for j in range(ng):
+                am1_energy_differences[i][j] = am1[i].ground_energy - am1[j].ground_energy
 
-        sum_of_squares = 0
-        for am1_diff, hlt_diff in zip(am1_energy_differences, hlt_energy_differences):
-            sum_of_squares += math.pow(am1_diff - hlt_diff, 2)
-
+        difference = am1_energy_differences - hlt_energy_differences
+        sum_of_squares = np.sum(np.square(difference))
         return sum_of_squares
 
     def dipole_fitness(self, am1):
