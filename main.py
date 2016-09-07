@@ -7,6 +7,7 @@ from deap import creator
 from deap import tools
 from parameter_group import ParameterGroup
 import gaussian_output
+from analysis import Analysis
 from gaussian_input import GaussianInput
 from gaussian import gaussian_single
 from header import Header
@@ -219,7 +220,7 @@ except TypeError:
 #         Begin Analysis
 #############################################
 # anal = Analysis(reparm_data)
-# anal.face_to_face()
+# anal.trithiophene()
 #############################################
 #         End Analysis
 #############################################
