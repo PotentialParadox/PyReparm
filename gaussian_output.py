@@ -55,6 +55,34 @@ def find_parameters(file_string):
     return Parameters(from_parameter_string=m.group(0))
 
 
+# find_frequencies
+def find_frequencies(file_string):
+    frequencies = []
+    p_float = re.compile('\-?\d+\.\d+,?')
+    p_freq_line = re.compile("Frequencies.*")
+    m = re.findall(p_freq_line, file_string)
+    if not m:
+        return None
+    for i in m:
+        n = re.findall(p_float, i)
+        for j in n:
+            frequencies.append(float(j))
+    return frequencies
+
+
+def find_IR_intensities(file_string):
+    intensities = []
+    p_float = re.compile('\-?\d+\.\d+,?')
+    p_freq_line = re.compile("IR Inten.*")
+    m = re.findall(p_freq_line, file_string)
+    if not m:
+        return None
+    for i in m:
+        n = re.findall(p_float, i)
+        for j in n:
+            intensities.append(float(j))
+    return intensities
+
 # find_opt_coordinates
 #               finds the optimized coordinates of an gaussian output with opt
 def find_opt_coordinates(file_string):
