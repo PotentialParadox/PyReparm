@@ -80,7 +80,7 @@ def temperature_perturbation(reparm_data, opt_coords, normal_modes):
                                   multiplicity=opt_coords.multiplicity,
                                   coordinates=m_coordinates)
         coordinates_a.append(coordinates)
-        return coordinates_a
+    return coordinates_a
 
 
 def face_to_face(reparm_data):
