@@ -34,10 +34,18 @@ class Evaluator:
         print('current', current)
         print('std', std_current)
         total_fitness = np.sum(std_current**2)
-        if not self.reparm_data.best_fitness[0] or total_fitness < self.reparm_data.best_fitness[0]:
+        if self.reparm_data.original_fitness is not None:
+            total_fitness = total_fitness / self.reparm_data.original_fitness[0]
+            print("Total", total_fitness, "Needs to beat", self.reparm_data.best_fitness[0])
+        else:
+            orig_fit = [total_fitness]
+            orig_fit.extend(current)
+            self.reparm_data.original_fitness = orig_fit
+            total_fitness = 1
+        if self.reparm_data.best_fitness is None or total_fitness < self.reparm_data.best_fitness[0]:
             print("Previous Best", self.reparm_data.best_fitness)
             new_best = [total_fitness]
-            new_best.extend(std_current.tolist())
+            new_best.extend(current)
             self.reparm_data.best_fitness = new_best
             print("New Best Found:", self.reparm_data.best_fitness)
             self.reparm_data.save()
@@ -88,15 +96,19 @@ class Evaluator:
 
     def standardize(self, list_object):
         if self.std is not None:
+            for i in self.std:
+                if i < 0.00000001:
+                    return np.array(list_object)
             return np.array(list_object) / self.std
         return np.array(list_object)
 
     def update_best(self):
         if self.reparm_data.best_fitness is not None and self.std is not None:
-            # print("starting with", self.reparm_data.best_fitness)
+            std_orig = self.standardize(self.reparm_data.original_fitness[1:])
+            self.reparm_data.original_fitness[0] = np.sum(std_orig**2)
+
             std_best = self.standardize(self.reparm_data.best_fitness[1:])
-            self.reparm_data.best_fitness[0] = np.sum(std_best**2)
-            # print("best is now", self.reparm_data.best_fitness)
+            self.reparm_data.best_fitness[0] = np.sum(std_best**2) / self.reparm_data.original_fitness[0]
 
     # All elements below original
     def aebo(self, elements):

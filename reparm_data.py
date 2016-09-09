@@ -41,12 +41,14 @@ class ReparmData():
         lf_hlt = lf.reparm_input.high_level_theory
         lf_filename = lf.reparm_input.file_name
         if rp_ng == lf_ng and rp_filename == lf_filename and rp_hlt == lf_hlt:
+            print("Loading data from past run")
             self.best_fitness = lf.best_fitness
             self.original_fitness = lf.original_fitness
             self.high_level_outputs = lf.high_level_outputs
             self.best_am1_individual = lf.best_am1_individual
             self.observations = lf.observations
             self.targets = lf.targets
+            return True
         else:
             print("Data file does not match, starting new job")
 

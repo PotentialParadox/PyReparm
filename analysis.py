@@ -244,3 +244,9 @@ def distances(containter):
         values.append(containter[i] - containter[i-1])
     return values
 
+fin = open("reparm.in", 'r')
+file = fin.read()
+reparm_data = ReparmData(file)
+reparm_data.load()
+analysis = Analysis(reparm_data)
+analysis.dithiophene()

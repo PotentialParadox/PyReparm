@@ -1,10 +1,9 @@
 import random
 from evaluation import Evaluator
 from generator import generator
-from mutate import mutateset
+from mutate import mutateset, MyTakeStep
 from parameter_group import ParameterGroup
 import gaussian_output
-from analysis import Analysis
 from gaussian_input import GaussianInput
 from gaussian import gaussian_single
 from header import Header
@@ -15,6 +14,10 @@ from scipy.optimize import basinhopping
 from scipy.optimize import differential_evolution
 from copy import deepcopy
 
+
+def print_fun(x, f, accepted):
+    print("at minimum %.4f accepted %d" % (f, int(accepted)))
+
 #############################################
 #         BEGIN USER INPUT
 #############################################
@@ -22,7 +25,10 @@ fin = open("reparm.in", 'r')
 file = fin.read()
 reparm_data = ReparmData(file)
 if reparm_data.reparm_input.should_continue:
-    reparm_data.load()
+    good_load = reparm_data.load()
+    if not good_load:
+        Genesis(reparm_data=reparm_data)
+        reparm_data.save()
 else:
     Genesis(reparm_data=reparm_data)
     reparm_data.save()
@@ -55,13 +61,36 @@ IMUTPT = 0.05
 IL = []
 for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
     IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
-nIL = np.array(IL)
-l_nIL = nIL / 2
-u_nIL = nIL * 2
 
 # The evaluator (fitness, cost) function
 eval = Evaluator(reparm_data=reparm_data)
-eval.eval(IL)
+if reparm_data.original_fitness is None:
+    eval.eval(IL)
+print("Original Fitness:", reparm_data.original_fitness)
 
-ret = basinhopping(eval.eval, IL)
+# BasinHopping
+# mytakestep = MyTakeStep(pert=0.5, chance=1)
+# minimizer_kwargs = {"method": "BFGS"}
+# ret = basinhopping(eval.eval, IL, minimizer_kwargs=minimizer_kwargs,
+#                    take_step=mytakestep, niter=2, callback=print_fun)
 
+# Differential Evolution
+bounds = []
+for i in IL:
+    value = i/1.02, i*1.02
+    bounds.append(value)
+ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN)
+best = reparm_data.best_am1_individual
+best.set_pfloats(ret.x)
+open('ga_best.com', 'w').write(best.inputs[0].str())
+
+
+# def fitness(x):
+#     sum = 0
+#     for i in x:
+#         sum += (5 - i)**2
+#     return sum
+#
+# test = [(3, 5), (4, 9), (1, 6), (-65, 100)]
+# ret = differential_evolution(fitness, bounds=test)
+# print(ret.x)
