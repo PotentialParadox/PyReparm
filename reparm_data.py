@@ -34,10 +34,19 @@ class ReparmData():
 
     def load(self):
         lf = pickle.load(open("reparm.dat", 'rb'))
-        self.best_fitness = lf.best_fitness
-        self.original_fitness = lf.original_fitness
-        self.high_level_outputs = lf.high_level_outputs
-        self.best_am1_individual = lf.best_am1_individual
-        self.observations = lf.observations
-        self.targets = lf.targets
+        rp_ng = self.reparm_input.number_geometries
+        rp_hlt = self.reparm_input.high_level_theory
+        rp_filename = self.reparm_input.file_name
+        lf_ng = lf.reparm_input.number_geometries
+        lf_hlt = lf.reparm_input.high_level_theory
+        lf_filename = lf.reparm_input.file_name
+        if rp_ng == lf_ng and rp_filename == lf_filename and rp_hlt == lf_hlt:
+            self.best_fitness = lf.best_fitness
+            self.original_fitness = lf.original_fitness
+            self.high_level_outputs = lf.high_level_outputs
+            self.best_am1_individual = lf.best_am1_individual
+            self.observations = lf.observations
+            self.targets = lf.targets
+        else:
+            print("Data file does not match, starting new job")
 
