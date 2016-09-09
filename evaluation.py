@@ -40,6 +40,7 @@ class Evaluator:
             new_best.extend(std_current.tolist())
             self.reparm_data.best_fitness = new_best
             print("New Best Found:", self.reparm_data.best_fitness)
+            self.reparm_data.save()
 
         return total_fitness
 
