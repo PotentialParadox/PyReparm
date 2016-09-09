@@ -20,9 +20,11 @@ class Evaluator:
         nproc = self.reparm_data.reparm_input.number_processors
         gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
         if not gouts:
-            return None
+            return float('Inf')
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
+        if energy_fitness is None or dipole_fitness is None:
+            return float('Inf')
         current = [energy_fitness, dipole_fitness]
         if self.aebo(current):
             self.reparm_data.targets.append(current)
@@ -32,8 +34,14 @@ class Evaluator:
         print('current', current)
         print('std', std_current)
         total_fitness = np.sum(std_current**2)
+        if not self.reparm_data.best_fitness[0] or total_fitness < self.reparm_data.best_fitness[0]:
+            print("Previous Best", self.reparm_data.best_fitness)
+            new_best = [total_fitness]
+            new_best.extend(std_current.tolist())
+            self.reparm_data.best_fitness = new_best
+            print("New Best Found:", self.reparm_data.best_fitness)
 
-        return total_fitness, energy_fitness, dipole_fitness
+        return total_fitness
 
     def energy_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs
