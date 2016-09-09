@@ -44,7 +44,6 @@ class Evaluator:
             hlt_energy_differences = np.zeros((ng, ng))
             for j in range(ng):
                 for k in range(ng):
-                    print(i, j, k)
                     hlt_energy_differences[j][k] = hlt[i*ng + j].ground_energy - hlt[i*ng + k].ground_energy
 
             am1_energy_differences = np.zeros((ng, ng))
