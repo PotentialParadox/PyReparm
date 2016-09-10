@@ -15,7 +15,6 @@ class Evaluator:
     # Evaluates an individual
     def eval(self, am1):
         param_group = deepcopy(self.reparm_data.best_am1_individual)
-        hlt = deepcopy(self.reparm_data.high_level_outputs)
         param_group.set_pfloats(am1)
         nproc = self.reparm_data.reparm_input.number_processors
         gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
@@ -24,6 +23,7 @@ class Evaluator:
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
         freq_fitness = self.freq_fitness(gouts)
+        # ir_fitness = self.ir_intensity_fitness(gouts)
         if energy_fitness is None or dipole_fitness is None:
             return float('Inf')
         current = [energy_fitness, dipole_fitness, freq_fitness]
@@ -32,7 +32,7 @@ class Evaluator:
         self.reparm_data.features.append(am1)
         self.reparm_data.observations.append(current)
 
-        if self.aebo(current, multiplier=2):
+        if self.aebo(current, multiplier=1):
             self.reparm_data.targets.append(current)
             self.update_std()
             self.update_best()
@@ -101,6 +101,31 @@ class Evaluator:
                     am1_freq_differences[j][k][:] = geom2 - geom1
 
             difference = am1_freq_differences - hlt_freq_differences
+            sum_of_squares += np.sum(np.square(difference))
+        return sum_of_squares / (ng**2 * list_size)
+
+    def ir_intensity_fitness(self, am1):
+        hlt = self.reparm_data.high_level_outputs
+        nsets = len(self.reparm_data.reparm_input.training_sets)
+        ng = self.reparm_data.reparm_input.number_geometries
+        list_size = len(hlt[0].ir_intensities)
+        sum_of_squares = 0
+        for i in range(nsets):
+            hlt_ir_differences = np.zeros((ng, ng, list_size))
+            for j in range(ng):
+                for k in range(ng):
+                    geom1 = np.array(hlt[i*ng + j].ir_intensities)
+                    geom2 = np.array(hlt[i*ng + k].ir_intensities)
+                    hlt_ir_differences[j][k][:] = geom2 - geom1
+
+            am1_ir_differences = np.zeros((ng, ng, list_size))
+            for j in range(ng):
+                for k in range(ng):
+                    geom1 = np.array(am1[i*ng + j].ir_intensities)
+                    geom2 = np.array(am1[i*ng + k].ir_intensities)
+                    am1_ir_differences[j][k][:] = geom2 - geom1
+
+            difference = am1_ir_differences - hlt_ir_differences
             sum_of_squares += np.sum(np.square(difference))
         return sum_of_squares / (ng**2 * list_size)
 

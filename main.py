@@ -70,8 +70,9 @@ print("Original Fitness:", reparm_data.original_fitness)
 
 # Differential Evolution
 bounds = []
+bp = 1.05
 for i in IL:
-    value = i/1.02, i*1.02
+    value = i*(2-bp), i*bp
     bounds.append(value)
 ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN,
                              mutation=MUTPB, recombination=CXPB)
