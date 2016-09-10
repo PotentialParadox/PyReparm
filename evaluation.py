@@ -26,10 +26,15 @@ class Evaluator:
         if energy_fitness is None or dipole_fitness is None:
             return float('Inf')
         current = [energy_fitness, dipole_fitness]
+
+        # Update Data Log for Sci-kitLearn
+        self.reparm_data.features.append(am1)
+        self.reparm_data.observations.append(current)
+
         if self.aebo(current):
             self.reparm_data.targets.append(current)
-        self.update_std()
-        self.update_best()
+            self.update_std()
+            self.update_best()
         std_current = self.standardize(current)
         print('current', current)
         print('std', std_current)
@@ -70,7 +75,6 @@ class Evaluator:
 
             difference = am1_energy_differences - hlt_energy_differences
             sum_of_squares += np.sum(np.square(difference))
-
         return sum_of_squares
 
     def dipole_fitness(self, am1):
@@ -86,7 +90,6 @@ class Evaluator:
         sum_of_squares = 0
         for am1_d, hlt_d in zip(am1_dipoles, hlt_dipoles):
             sum_of_squares += math.pow(am1_d - hlt_d, 2)
-
         return sum_of_squares
 
     def update_std(self):

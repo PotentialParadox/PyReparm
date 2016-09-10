@@ -20,6 +20,7 @@ class ReparmData():
         # This is of type param_group
         self.best_am1_individual = None
         # Store Jobs for scikit-learn
+        self.features = []
         self.observations = []
         self.targets = []
 
@@ -46,6 +47,7 @@ class ReparmData():
             self.original_fitness = lf.original_fitness
             self.high_level_outputs = lf.high_level_outputs
             self.best_am1_individual = lf.best_am1_individual
+            self.features = lf.features
             self.observations = lf.observations
             self.targets = lf.targets
             return True
