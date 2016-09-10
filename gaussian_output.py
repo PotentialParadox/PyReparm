@@ -12,6 +12,8 @@ class GaussianOutput:
         if output_string:
             self.ground_energy = find_ground_energy(output_string)
             self.dipole = find_dipole(output_string)
+            self.frequencies = find_frequencies(output_string)
+            self.ir_intensities = find_IR_intensities(output_string)
             self.parameters = find_parameters(output_string)
             self.opt_coords = find_opt_coordinates(output_string)
 

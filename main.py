@@ -68,12 +68,6 @@ if reparm_data.original_fitness is None:
     eval.eval(IL)
 print("Original Fitness:", reparm_data.original_fitness)
 
-# BasinHopping
-# mytakestep = MyTakeStep(pert=0.5, chance=1)
-# minimizer_kwargs = {"method": "BFGS"}
-# ret = basinhopping(eval.eval, IL, minimizer_kwargs=minimizer_kwargs,
-#                    take_step=mytakestep, niter=2, callback=print_fun)
-
 # Differential Evolution
 bounds = []
 for i in IL:
@@ -85,6 +79,8 @@ best = reparm_data.best_am1_individual
 best.set_pfloats(ret.x)
 open('ga_best.com', 'w').write(best.inputs[0].str())
 
+# BasinHopping
+# ret = basinhopping(eval.eval, IL, niter=2)
 
 # def fitness(x):
 #     sum = 0

@@ -23,21 +23,23 @@ class Evaluator:
             return float('Inf')
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
+        freq_fitness = self.freq_fitness(gouts)
         if energy_fitness is None or dipole_fitness is None:
             return float('Inf')
-        current = [energy_fitness, dipole_fitness]
+        current = [energy_fitness, dipole_fitness, freq_fitness]
 
         # Update Data Log for Sci-kitLearn
         self.reparm_data.features.append(am1)
         self.reparm_data.observations.append(current)
 
-        if self.aebo(current):
+        if self.aebo(current, multiplier=2):
             self.reparm_data.targets.append(current)
             self.update_std()
             self.update_best()
         std_current = self.standardize(current)
         print('current', current)
-        print('std', std_current)
+        print('std', self.std)
+        print('std_current', std_current)
         total_fitness = np.sum(std_current**2)
         if self.reparm_data.original_fitness is not None:
             total_fitness = total_fitness / self.reparm_data.original_fitness[0]
@@ -77,6 +79,31 @@ class Evaluator:
             sum_of_squares += np.sum(np.square(difference))
         return sum_of_squares
 
+    def freq_fitness(self, am1):
+        hlt = self.reparm_data.high_level_outputs
+        nsets = len(self.reparm_data.reparm_input.training_sets)
+        ng = self.reparm_data.reparm_input.number_geometries
+        list_size = len(hlt[0].frequencies)
+        sum_of_squares = 0
+        for i in range(nsets):
+            hlt_freq_differences = np.zeros((ng, ng, list_size))
+            for j in range(ng):
+                for k in range(ng):
+                    geom1 = np.array(hlt[i*ng + j].frequencies)
+                    geom2 = np.array(hlt[i*ng + k].frequencies)
+                    hlt_freq_differences[j][k][:] = geom2 - geom1
+
+            am1_freq_differences = np.zeros((ng, ng, list_size))
+            for j in range(ng):
+                for k in range(ng):
+                    geom1 = np.array(am1[i*ng + j].frequencies)
+                    geom2 = np.array(am1[i*ng + k].frequencies)
+                    am1_freq_differences[j][k][:] = geom2 - geom1
+
+            difference = am1_freq_differences - hlt_freq_differences
+            sum_of_squares += np.sum(np.square(difference))
+        return sum_of_squares / (ng**2 * list_size)
+
     def dipole_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs
         hlt_dipoles = []
@@ -114,14 +141,14 @@ class Evaluator:
             self.reparm_data.best_fitness[0] = np.sum(std_best**2) / self.reparm_data.original_fitness[0]
 
     # All elements below original
-    def aebo(self, elements):
+    # The multiplier relaxes the constraint
+    def aebo(self, elements, multiplier=1):
         if self.reparm_data.original_fitness is None:
             return True
         if elements is None:
             return False
         for i, l in zip(elements, self.reparm_data.original_fitness[1:]):
-            if i > l:
+            if i > l * multiplier:
                 return False
         return True
-
 
