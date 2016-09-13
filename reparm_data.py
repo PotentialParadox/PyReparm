@@ -53,4 +53,5 @@ class ReparmData():
             return True
         else:
             print("Data file does not match, starting new job")
+            return False
 
