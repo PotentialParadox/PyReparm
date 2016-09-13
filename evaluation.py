@@ -34,6 +34,7 @@ class Evaluator:
 
         if self.aebo(current, multiplier=1):
             self.reparm_data.targets.append(current)
+        if self.reparm_data.targets is not None:
             self.update_std()
             self.update_best()
         std_current = self.standardize(current)
