@@ -201,7 +201,7 @@ class Analysis:
                 gin.header[0] = am1_header
                 am1_energies.append(energy(run(gin.str())))
             else:
-                am1_energies = self.trithi_energies[0]
+                am1_energies = self.dithi_energies[0]
             # Run HLT
             if self.dithi_energies[2] is None:
                 hlt_header_s = "#P " + hlt + "\n\nHLT\n"
@@ -209,7 +209,7 @@ class Analysis:
                 gin.header[0] = hlt_header
                 hlt_energies.append(energy(run(gin.str())))
             else:
-                hlt_energies = self.trithi_energies[2]
+                hlt_energies = self.dithi_energies[2]
             # Run Reparm
             reparm_header_s = "#P AM1(Input,Print)\n\nReparm\n"
             reparm_header = Header(reparm_header_s)
@@ -235,7 +235,9 @@ class Analysis:
         lf = pickle.load(open("analysis.dat", 'rb'))
         if lf.hlt == self.hlt and self.hlt is not None:
             self.ftf_energies = lf.ftf_energies
+            self.dftf_energies = lf.dftf_energies
             self.trithi_energies = lf.trithi_energies
+            self.dithi_energies = lf.dithi_energies
 
 
 def distances(containter):
