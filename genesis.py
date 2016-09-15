@@ -88,13 +88,14 @@ class Genesis:
             self.coordinates.extend(geometries.dihedral(self.reparm_data))
 
     def create_initial_individual(self):
+        inputs = []
+        # Create the Excited State and Frequency
         s_header1 = ("#P AM1(Input,Print) CIS(Singlets,NStates=" +
                      str(self.reparm_data.reparm_input.number_excited_states) +
                      ") pop(full)\n\nindividual\n")
         first_header = Header(from_header_string=s_header1)
         s_header2 = "#P AM1(Input,Print) freq\n\nAM1\n"
         second_header = Header(from_header_string=s_header2)
-        inputs = []
         for i in self.coordinates:
             gin1 = GaussianInput(header=first_header,
                                  coordinates=i,
@@ -104,6 +105,15 @@ class Genesis:
                                  parameters=self.init_parameters)
             gin1.link(gin2)
             inputs.append(gin1)
+        # Create Optimization Jobs
+        if 0 in self.reparm_data.reparm_input.training_sets:
+            s_header = "#P AM1(Input,Print) opt\n\nindividual\n"
+            header = Header(from_header_string=s_header)
+            gin = GaussianInput(header=header,
+                                coordinates=self.coordinates[0],
+                                parameters=self.init_parameters)
+            inputs.append(gin)
+
         param_group = ParameterGroup(inputs=inputs)
         nproc = self.reparm_data.reparm_input.number_processors
         gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
@@ -115,6 +125,7 @@ class Genesis:
         self.reparm_data.best_am1_individual = param_group
 
     def create_HLT(self):
+        hlt_inputs = []
         s_header1 = ("#P " +
                      str(self.reparm_data.reparm_input.high_level_theory) +
                      " CIS(Singlets,NStates=" +
@@ -125,15 +136,23 @@ class Genesis:
                      " freq\n\nhlt\n")
         header1 = Header(from_header_string=s_header1)
         header2 = Header(from_header_string=s_header2)
-        am1_inputs = self.param_group.inputs
-        hlt_inputs = []
-        for i in am1_inputs:
+        for i in self.coordinates:
             hlt_input = GaussianInput(header=header1,
-                                      coordinates=i.coordinates[0])
+                                      coordinates=i)
             hlt_freq = GaussianInput(header=header2,
-                                     coordinates=i.coordinates[0])
+                                     coordinates=i)
             hlt_input.link(hlt_freq)
             hlt_inputs.append(hlt_input)
+        # Create Optimization Jobs
+        if 0 in self.reparm_data.reparm_input.training_sets:
+            s_header = ("#P " +
+                        str(self.reparm_data.reparm_input.high_level_theory) +
+                        "opt\n\nhlt\n")
+            header = Header(from_header_string=s_header)
+            gin = GaussianInput(header=header,
+                                coordinates=self.coordinates[0])
+            hlt_inputs.append(gin)
+
         hlt_group = ParameterGroup(inputs=hlt_inputs)
         nproc = self.reparm_data.reparm_input.number_processors
         self.reparm_data.high_level_outputs = run_gaussian(parameter_group=hlt_group, number_processors=nproc)
