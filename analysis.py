@@ -122,7 +122,7 @@ class Analysis:
         reparm_energies = []
         hlt_energies = []
         for i in range(number_steps):
-            for atom in coords[9:18]:
+            for atom in coords[16:36]:
                 atom[1] += 0.1
             # Run AM1
             if self.dftf_energies[0] is None:
@@ -236,6 +236,6 @@ reparm_data = ReparmData(file)
 load_success = reparm_data.load()
 if load_success:
     analysis = Analysis(reparm_data)
-    analysis.dithi_face_to_face()
+    analysis.trithiophene()
 else:
     print("Reparm.dat does not match reparm.in, analysis closed")
