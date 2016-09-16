@@ -119,10 +119,19 @@ class Genesis:
         gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
         param_group.outputs = gouts
         self.param_group = param_group
-        fout = open("training.xyz", 'w')
-        fout.write(self.param_group.xyz_str())
-        fout.close()
         self.reparm_data.best_am1_individual = param_group
+
+        # Print out the geometries
+        nsets = len(self.reparm_data.reparm_input.training_sets)
+        ng = self.reparm_data.reparm_input.number_geometries
+        for i in range(nsets):
+            xyz_inputs = []
+            for j in range(ng):
+                xyz_inputs.append(inputs[i*ng + j])
+            xyz_group = ParameterGroup(inputs=xyz_inputs)
+            set_id = self.reparm_data.reparm_input.training_sets[i]
+            xyz_file = "training_" + str(set_id) + ".xyz"
+            open(xyz_file, 'w').write(xyz_group.xyz_str())
 
     def create_HLT(self):
         hlt_inputs = []

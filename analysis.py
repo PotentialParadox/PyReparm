@@ -8,6 +8,7 @@ from rdkit_converter import reparm_to_rdkit, rdkit_to_reparm
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdMolTransforms import SetDihedralDeg, SetBondLength
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 import pickle
 
@@ -151,7 +152,7 @@ class Analysis:
 
     def dithiophene(self):
         number_steps = 20
-        max_angle = 90
+        max_angle = 180
         step_size = max_angle / number_steps
 
         gin = GaussianInput(open('dithiophene.com', 'r').read())
@@ -195,6 +196,7 @@ class Analysis:
             reparm_energies.append(energy(run(gin.str())))
         self.dithi_energies = [am1_energies, reparm_energies, hlt_energies]
         self.save()
+        print_rms(am1_energies, reparm_energies, hlt_energies)
         print_graph(am1_energies, reparm_energies, hlt_energies)
 
     def save(self):
@@ -230,12 +232,25 @@ def print_graph(am1, reparm, hlt):
     plt.legend()
     plt.show()
 
+
+def print_rms(am1, reparm, hlt):
+    am1_e = np.array(am1) - np.average(np.array(am1))
+    reparm_e = np.array(reparm) - np.average(np.array(reparm))
+    hlt_e = np.array(hlt) - np.average(np.array(hlt))
+    am1_e_diff = am1_e - hlt_e
+    am1_rms = math.sqrt(np.sum(am1_e_diff**2))
+    reparm_e_diff = reparm_e - hlt_e
+    reparm_rms = math.sqrt(np.sum(reparm_e_diff**2))
+    print('AM1 RMS', am1_rms)
+    print('Reparm RMS', reparm_rms)
+
+
 fin = open("reparm.in", 'r')
 file = fin.read()
 reparm_data = ReparmData(file)
 load_success = reparm_data.load()
 if load_success:
     analysis = Analysis(reparm_data)
-    analysis.trithiophene()
+    analysis.dithiophene()
 else:
     print("Reparm.dat does not match reparm.in, analysis closed")

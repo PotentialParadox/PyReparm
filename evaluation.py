@@ -23,11 +23,11 @@ class Evaluator:
         # opt_fitness = self.opt_fitness(gouts)
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
-        freq_fitness = self.freq_fitness(gouts)
+        # freq_fitness = self.freq_fitness(gouts)
         # ir_fitness = self.ir_intensity_fitness(gouts)
-        if energy_fitness is None or dipole_fitness is None or freq_fitness is None:
+        if energy_fitness is None or dipole_fitness is None:
             return float('Inf')
-        current = [energy_fitness, dipole_fitness, freq_fitness]
+        current = [energy_fitness, dipole_fitness]
 
         # Update Data Log for Sci-kitLearn
         self.reparm_data.features.append(am1)
