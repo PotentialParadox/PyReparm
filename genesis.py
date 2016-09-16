@@ -90,20 +90,21 @@ class Genesis:
     def create_initial_individual(self):
         inputs = []
         # Create the Excited State and Frequency
-        s_header1 = ("#P AM1(Input,Print) CIS(Singlets,NStates=" +
+        s_header1 = "#P AM1(Input,Print) freq\n\nAM1\n"
+        s_header2 = ("#P AM1(Input,Print) CIS(Singlets,NStates=" +
                      str(self.reparm_data.reparm_input.number_excited_states) +
                      ") pop(full)\n\nindividual\n")
         first_header = Header(from_header_string=s_header1)
-        s_header2 = "#P AM1(Input,Print) freq\n\nAM1\n"
         second_header = Header(from_header_string=s_header2)
         for i in self.coordinates:
             gin1 = GaussianInput(header=first_header,
                                  coordinates=i,
                                  parameters=self.init_parameters)
-            gin2 = GaussianInput(header=second_header,
-                                 coordinates=i,
-                                 parameters=self.init_parameters)
-            gin1.link(gin2)
+            if self.reparm_data.reparm_input.number_excited_states > 0:
+                gin2 = GaussianInput(header=second_header,
+                                     coordinates=i,
+                                     parameters=self.init_parameters)
+                gin1.link(gin2)
             inputs.append(gin1)
         # Create Optimization Jobs
         if 0 in self.reparm_data.reparm_input.training_sets:
@@ -137,20 +138,21 @@ class Genesis:
         hlt_inputs = []
         s_header1 = ("#P " +
                      str(self.reparm_data.reparm_input.high_level_theory) +
+                     " freq\n\nhlt\n")
+        s_header2 = ("#P " +
+                     str(self.reparm_data.reparm_input.high_level_theory) +
                      " CIS(Singlets,NStates=" +
                      str(self.reparm_data.reparm_input.number_excited_states) +
                      ") pop(full)\n\nhlt\n")
-        s_header2 = ("#P " +
-                     str(self.reparm_data.reparm_input.high_level_theory) +
-                     " freq\n\nhlt\n")
         header1 = Header(from_header_string=s_header1)
         header2 = Header(from_header_string=s_header2)
         for i in self.coordinates:
             hlt_input = GaussianInput(header=header1,
                                       coordinates=i)
-            hlt_freq = GaussianInput(header=header2,
-                                     coordinates=i)
-            hlt_input.link(hlt_freq)
+            if self.reparm_data.reparm_input.number_excited_states > 0:
+                hlt_freq = GaussianInput(header=header2,
+                                         coordinates=i)
+                hlt_input.link(hlt_freq)
             hlt_inputs.append(hlt_input)
         # Create Optimization Jobs
         if 0 in self.reparm_data.reparm_input.training_sets:
