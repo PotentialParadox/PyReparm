@@ -7,6 +7,7 @@ from gaussian_output import find_opt_coordinates
 from rdkit_converter import reparm_to_rdkit, rdkit_to_reparm
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdMolTransforms import SetDihedralDeg, SetBondLength
+import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
@@ -115,15 +116,10 @@ class Analysis:
             reparm_energies.append(energy(run(gin.str())))
         self.trithi_energies = [am1_energies, reparm_energies, hlt_energies]
         self.save()
-        x_values = [i*step_size for i in range(number_steps - 1)]
         am1_diffs = distances(am1_energies)
         reparm_diffs = distances(reparm_energies)
         hlt_diffs = distances(hlt_energies)
-        plt.plot(x_values, am1_diffs, 'r--', label="AM1")
-        plt.plot(x_values, reparm_diffs, 'b--', label="Reparm")
-        plt.plot(x_values, hlt_diffs, 'g--', label="HLT")
-        plt.legend(loc="best")
-        plt.show()
+        print_graph(am1_diffs, reparm_diffs, hlt_diffs)
 
     def dithi_face_to_face(self):
         number_steps = 20
@@ -218,15 +214,10 @@ class Analysis:
             reparm_energies.append(energy(run(gin.str())))
         self.dithi_energies = [am1_energies, reparm_energies, hlt_energies]
         self.save()
-        x_values = [i * step_size for i in range(number_steps - 1)]
         am1_diffs = distances(am1_energies)
         reparm_diffs = distances(reparm_energies)
         hlt_diffs = distances(hlt_energies)
-        plt.plot(x_values, am1_diffs, 'r--', label="AM1")
-        plt.plot(x_values, reparm_diffs, 'b--', label="Reparm")
-        plt.plot(x_values, hlt_diffs, 'g--', label="HLT")
-        plt.legend(loc="best")
-        plt.show()
+        print_graph(am1_diffs, reparm_diffs, hlt_diffs)
 
     def save(self):
         pickle.dump(self, open("analysis.dat", 'wb'))
@@ -240,15 +231,42 @@ class Analysis:
             self.dithi_energies = lf.dithi_energies
 
 
-def distances(containter):
-    values = []
-    for i in range(1, len(containter)):
-        values.append(containter[i] - containter[i-1])
-    return values
+def distances(container):
+    values = np.zeros((len(container), len(container)))
+    for i in range(1, len(container)):
+        for j in range(1, len(container)):
+            values[i][j] = abs(container[i] - container[j])
+    return np.array(values)
+
+
+def print_graph(am1, reparm, hlt):
+    plt.matshow(am1)
+    plt.colorbar()
+    plt.title("AM1")
+
+    plt.matshow(reparm)
+    plt.colorbar()
+    plt.title("Reparm")
+
+    plt.matshow(hlt)
+    plt.colorbar()
+    plt.title("HLT")
+
+    am1_diff = hlt - am1
+    plt.matshow(am1_diff)
+    plt.colorbar()
+    plt.title("HLT - AM1")
+
+    reparm_diff = hlt - reparm
+    plt.matshow(reparm_diff)
+    plt.colorbar()
+    plt.title("HLT - reparm")
+
+    plt.show()
 
 fin = open("reparm.in", 'r')
 file = fin.read()
 reparm_data = ReparmData(file)
 reparm_data.load()
 analysis = Analysis(reparm_data)
-analysis.dithiophene()
+analysis.trithiophene()

@@ -62,7 +62,7 @@ class Evaluator:
         return total_fitness
 
     def opt_fitness(self, am1):
-        hlt = self.reparm_data.high_level_outputs[0]
+        hlt = self.reparm_data.high_level_outputs[-1]
         coords = np.array(hlt.opt_coords.coordinates)
         print(coords[:][1:3])
         return 1

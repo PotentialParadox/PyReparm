@@ -1,6 +1,5 @@
 import random
 from evaluation import Evaluator
-from generator import generator
 from mutate import mutateset, MyTakeStep
 from parameter_group import ParameterGroup
 import gaussian_output
@@ -75,7 +74,7 @@ for i in IL:
     value = i*(2-bp), i*bp
     bounds.append(value)
 ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN,
-                             mutation=MUTPB, recombination=CXPB)
+                             mutation=MUTPB, recombination=CXPB, disp=True)
 best = reparm_data.best_am1_individual
 best.set_pfloats(ret.x)
 open('ga_best.com', 'w').write(best.inputs[0].str())
