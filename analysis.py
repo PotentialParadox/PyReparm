@@ -37,7 +37,7 @@ class Analysis:
             for atom in coords[9:18]:
                 atom[3] += 0.1
             # Run AM1
-            if self.ftf_energies is None:
+            if self.ftf_energies[0] is None:
                 am1_header_s = "#P AM1\n\nAM1\n"
                 am1_header = Header(am1_header_s)
                 gin.header[0] = am1_header
@@ -59,14 +59,7 @@ class Analysis:
                 hlt_energies = self.ftf_energies[2]
         self.ftf_energies = [am1_energies, reparm_energies, hlt_energies]
         self.save()
-        x_values = [i for i in range(number_steps - 1)]
-        am1_diffs = distances(am1_energies)
-        reparm_diffs = distances(reparm_energies)
-        hlt_diffs = distances(hlt_energies)
-        plt.plot(x_values, am1_diffs, 'r--', label="AM1")
-        plt.plot(x_values, reparm_diffs, 'b--', label="Reparm")
-        plt.plot(x_values, hlt_diffs, 'g--', label="HLT")
-        plt.legend(loc="best")
+        print_graph(am1_energies, reparm_energies, hlt_energies)
         plt.show()
 
     def trithiophene(self):
@@ -116,10 +109,7 @@ class Analysis:
             reparm_energies.append(energy(run(gin.str())))
         self.trithi_energies = [am1_energies, reparm_energies, hlt_energies]
         self.save()
-        am1_diffs = distances(am1_energies)
-        reparm_diffs = distances(reparm_energies)
-        hlt_diffs = distances(hlt_energies)
-        print_graph(am1_diffs, reparm_diffs, hlt_diffs)
+        print_graph(am1_energies, reparm_energies, hlt_energies)
 
     def dithi_face_to_face(self):
         number_steps = 20
@@ -134,7 +124,6 @@ class Analysis:
         for i in range(number_steps):
             for atom in coords[9:18]:
                 atom[1] += 0.1
-            print('testing', gin.coordinates[0].str())
             # Run AM1
             if self.dftf_energies[0] is None:
                 am1_header_s = "#P AM1\n\nAM1\n"
@@ -158,15 +147,7 @@ class Analysis:
                 hlt_energies = self.dftf_energies[2]
         self.dftf_energies = [am1_energies, reparm_energies, hlt_energies]
         self.save()
-        x_values = [i for i in range(number_steps - 1)]
-        am1_diffs = distances(am1_energies)
-        reparm_diffs = distances(reparm_energies)
-        hlt_diffs = distances(hlt_energies)
-        plt.plot(x_values, am1_diffs, 'r--', label="AM1")
-        plt.plot(x_values, reparm_diffs, 'b--', label="Reparm")
-        plt.plot(x_values, hlt_diffs, 'g--', label="HLT")
-        plt.legend(loc="best")
-        plt.show()
+        print_graph(am1_energies, reparm_energies, hlt_energies)
 
     def dithiophene(self):
         number_steps = 20
@@ -214,10 +195,7 @@ class Analysis:
             reparm_energies.append(energy(run(gin.str())))
         self.dithi_energies = [am1_energies, reparm_energies, hlt_energies]
         self.save()
-        am1_diffs = distances(am1_energies)
-        reparm_diffs = distances(reparm_energies)
-        hlt_diffs = distances(hlt_energies)
-        print_graph(am1_diffs, reparm_diffs, hlt_diffs)
+        print_graph(am1_energies, reparm_energies, hlt_energies)
 
     def save(self):
         pickle.dump(self, open("analysis.dat", 'wb'))
@@ -240,33 +218,24 @@ def distances(container):
 
 
 def print_graph(am1, reparm, hlt):
-    plt.matshow(am1)
-    plt.colorbar()
-    plt.title("AM1")
-
-    plt.matshow(reparm)
-    plt.colorbar()
-    plt.title("Reparm")
-
-    plt.matshow(hlt)
-    plt.colorbar()
-    plt.title("HLT")
-
-    am1_diff = hlt - am1
-    plt.matshow(am1_diff)
-    plt.colorbar()
-    plt.title("HLT - AM1")
-
-    reparm_diff = hlt - reparm
-    plt.matshow(reparm_diff)
-    plt.colorbar()
-    plt.title("HLT - reparm")
-
+    am1_e = np.array(am1)
+    reparm_e = np.array(reparm)
+    hlt_e = np.array(hlt)
+    am1_e = am1_e - np.average(am1_e)
+    reparm_e = reparm_e - np.average(reparm_e)
+    hlt_e = hlt_e - np.average(hlt_e)
+    plt.plot(am1_e, label='am1')
+    plt.plot(reparm_e, label='reparm')
+    plt.plot(hlt_e, label='hlt')
+    plt.legend()
     plt.show()
 
 fin = open("reparm.in", 'r')
 file = fin.read()
 reparm_data = ReparmData(file)
-reparm_data.load()
-analysis = Analysis(reparm_data)
-analysis.trithiophene()
+load_success = reparm_data.load()
+if load_success:
+    analysis = Analysis(reparm_data)
+    analysis.dithi_face_to_face()
+else:
+    print("Reparm.dat does not match reparm.in, analysis closed")
