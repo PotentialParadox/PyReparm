@@ -35,7 +35,7 @@ class Evaluator:
 
         if self.aebo(current, multiplier=1):
             self.reparm_data.targets.append(current)
-        if self.reparm_data.targets is not None:
+        if 10 < len(self.reparm_data.targets) < 100:
             self.update_std()
             self.update_best()
         std_current = self.standardize(current)
@@ -158,12 +158,14 @@ class Evaluator:
             self.std = np.std(tgs, axis=0)
 
     def standardize(self, list_object):
+        n = len(list_object)
+        list_np = np.array(list_object)
+        if self.reparm_data.original_fitness is None:
+            return (list_np / list_np) / n
         if self.std is not None:
-            for i in self.std:
-                if i < 0.00000001:
-                    return np.array(list_object)
-            return np.array(list_object) / self.std
-        return np.array(list_object)
+            return list_np / self.std
+        orig_np = np.array(self.reparm_data.original_fitness[1:])
+        return (list_np / orig_np) / n
 
     def update_best(self):
         if self.reparm_data.best_fitness is not None and self.std is not None:

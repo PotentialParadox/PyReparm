@@ -238,9 +238,9 @@ def print_rms(am1, reparm, hlt):
     reparm_e = np.array(reparm) - np.average(np.array(reparm))
     hlt_e = np.array(hlt) - np.average(np.array(hlt))
     am1_e_diff = am1_e - hlt_e
-    am1_rms = math.sqrt(np.sum(am1_e_diff**2))
+    am1_rms = math.sqrt(np.sum(am1_e_diff**2)/len(am1_e_diff))
     reparm_e_diff = reparm_e - hlt_e
-    reparm_rms = math.sqrt(np.sum(reparm_e_diff**2))
+    reparm_rms = math.sqrt(np.sum(reparm_e_diff**2)/len(reparm_e_diff))
     print('AM1 RMS', am1_rms)
     print('Reparm RMS', reparm_rms)
 

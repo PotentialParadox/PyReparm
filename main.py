@@ -74,7 +74,7 @@ for i in IL:
     value = i*(2-bp), i*bp
     bounds.append(value)
 ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN,
-                             mutation=(0.5, 1), recombination=CXPB, disp=True)
+                             mutation=0.5, recombination=CXPB, disp=True)
 best = reparm_data.best_am1_individual
 best.set_pfloats(ret.x)
 open('ga_best.com', 'w').write(best.inputs[0].str())
