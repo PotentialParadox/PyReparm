@@ -36,7 +36,7 @@ class Evaluator:
         if self.aebo(current, multiplier=1):
             self.reparm_data.targets.append(current)
         if 10 < len(self.reparm_data.targets) < 100 \
-                or (self.std is None and len(self.reparm_data) > 10):
+                or (self.std is None and len(self.reparm_data.targets) > 10):
             self.update_std()
             self.update_best()
         std_current = self.standardize(current)
