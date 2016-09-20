@@ -68,26 +68,19 @@ if reparm_data.original_fitness is None:
 print("Original Fitness:", reparm_data.original_fitness)
 
 # Differential Evolution
-bounds = []
-bp = 10
-for i in IL:
-    value = 0, bp
-    bounds.append(value)
-ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN,
-                             mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
+# bounds = []
+# bp = 10
+# for i in IL:
+#     value = 0, bp
+#     bounds.append(value)
+# ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN,
+#                              mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
+# best = reparm_data.best_am1_individual
+# best.set_pfloats(ret.x)
+# open('ga_best.com', 'w').write(best.inputs[0].str())
+
+# BasinHopping
+ret = basinhopping(eval.eval, IL, niter=2)
 best = reparm_data.best_am1_individual
 best.set_pfloats(ret.x)
 open('ga_best.com', 'w').write(best.inputs[0].str())
-
-# BasinHopping
-# ret = basinhopping(eval.eval, IL, niter=2)
-
-# def fitness(x):
-#     sum = 0
-#     for i in x:
-#         sum += (5 - i)**2
-#     return sum
-#
-# test = [(3, 5), (4, 9), (1, 6), (-65, 100)]
-# ret = differential_evolution(fitness, bounds=test)
-# print(ret.x)
