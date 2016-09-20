@@ -163,7 +163,7 @@ class Evaluator:
         list_np = np.array(list_object)
         if self.reparm_data.original_fitness is None:
             return (list_np / list_np) / n
-        if self.std is not None:
+        if self.std is not None and not self.std_contains_zero():
             return list_np / self.std
         orig_np = np.array(self.reparm_data.original_fitness[1:])
         return (list_np / orig_np) / n
@@ -187,4 +187,10 @@ class Evaluator:
             if i > l * multiplier:
                 return False
         return True
+
+    def std_contains_zero(self):
+        for i in self.std:
+            if i < 0.00000000001:
+                return True
+        return False
 
