@@ -8,10 +8,11 @@ from gaussian import gaussian_single
 from header import Header
 from reparm_data import ReparmData
 from genesis import Genesis
+from diff_evo import differential_evolution
 import numpy as np
 from scipy.optimize import basinhopping
-from scipy.optimize import differential_evolution
 from copy import deepcopy
+import time
 
 
 def print_fun(x, f, accepted):
@@ -23,8 +24,10 @@ def print_fun(x, f, accepted):
 fin = open("reparm.in", 'r')
 file = fin.read()
 reparm_data = ReparmData(file)
+should_continue = False
 if reparm_data.reparm_input.should_continue:
     good_load = reparm_data.load()
+    should_continue = True
     if not good_load:
         Genesis(reparm_data=reparm_data)
         reparm_data.save()
@@ -68,19 +71,28 @@ if reparm_data.original_fitness is None:
 print("Original Fitness:", reparm_data.original_fitness)
 
 # Differential Evolution
-# bounds = []
-# bp = 10
-# for i in IL:
-#     value = 0, bp
-#     bounds.append(value)
-# ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN,
-#                              mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
-# best = reparm_data.best_am1_individual
-# best.set_pfloats(ret.x)
-# open('ga_best.com', 'w').write(best.inputs[0].str())
+diff_init=None
+if should_continue:
+    diff_init="saved"
+else:
+    diff_init="latinhypercube"
+bounds = []
+bp = 10
+for i in IL:
+    value = 0, bp
+    bounds.append(value)
 
-# BasinHopping
-ret = basinhopping(eval.eval, IL, niter=2)
+time_start = time.time()
+ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN, init=diff_init,
+                             mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
+time_finish = time.time()
+print("Finished DE in", time_finish - time_start, "seconds")
 best = reparm_data.best_am1_individual
 best.set_pfloats(ret.x)
 open('ga_best.com', 'w').write(best.inputs[0].str())
+
+# BasinHopping
+# ret = basinhopping(eval.eval, IL, niter=200)
+# best = reparm_data.best_am1_individual
+# best.set_pfloats(ret.x)
+# open('ga_best.com', 'w').write(best.inputs[0].str())
