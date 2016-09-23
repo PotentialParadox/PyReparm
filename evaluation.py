@@ -58,7 +58,7 @@ class Evaluator:
             new_best.extend(current)
             self.reparm_data.best_fitness = new_best
             print("New Best Found:", self.reparm_data.best_fitness)
-            self.reparm_data.save()
+        self.reparm_data.save()
 
         return total_fitness
 
