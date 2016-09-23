@@ -4,10 +4,11 @@ from gaussian_input import GaussianInput
 from gaussian import gaussian_single as run
 from gaussian_output import find_ground_energy as energy
 from gaussian_output import find_opt_coordinates
-from rdkit_converter import reparm_to_rdkit, rdkit_to_reparm
+# from rdkit_converter import reparm_to_rdkit, rdkit_to_reparm
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdMolTransforms import SetDihedralDeg, SetBondLength
 import numpy as np
+import seaborn as sns
 import math
 import matplotlib.pyplot as plt
 import pickle
@@ -250,7 +251,32 @@ file = fin.read()
 reparm_data = ReparmData(file)
 load_success = reparm_data.load()
 if load_success:
-    analysis = Analysis(reparm_data)
-    analysis.dithiophene()
+    # analysis = Analysis(reparm_data)
+    # analysis.dithiophene()
+    print("Success")
 else:
     print("Reparm.dat does not match reparm.in, analysis closed")
+
+X = np.array(reparm_data.features)
+Y = np.array(reparm_data.observations)
+T = np.transpose(np.append(X[:,70:], Y, axis=1))
+print(T)
+sns.set(style='whitegrid', context='notebook')
+sns.set(font_scale=1.0)
+cm = np.corrcoef(T)
+hm = sns.heatmap(cm,
+        cbar=True,
+        annot=True,
+        square=True,
+        fmt='.2f',
+        annot_kws={'size': 10})
+plt.show()
+
+# IL = []
+# for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
+    # IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
+
+# for i, v in enumerate(IL):
+    # print(i, v)
+
+# print(reparm_data.best_am1_individual.inputs[0].parameters[0].str())
