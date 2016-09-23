@@ -12,10 +12,18 @@ class Parameters:
             self.p_floats=p_floats
 
     def __find_labels(self, parameter_string):
-        p_label = re.compile("(\S+\s*)|\n")
+        p_label = re.compile("(.*?=[^a-zA-Z]+?(?=[^\d\.\-\s\,]))|\n|(\S+\s)")
         m = re.findall(p_label, parameter_string)
-        if m:
-            return m
+        labels = []
+        for i in m:
+            if i[0] != '':
+                labels.append(i[0])
+            else:
+                labels.append(i[1])
+        # for i in labels:
+            # print(i)
+        if labels != []:
+            return labels
         return None
 
     def __extract_floats(self):
@@ -23,11 +31,17 @@ class Parameters:
         p_not_label = re.compile("-?\\d+\\.\\d+.*\n*")
         p_eisol = re.compile("EISol")
         p_eheat = re.compile("EHeat")
+        p_gcore = re.compile("GCore")
         p_newline = re.compile("\n")
         p_floats = []
         line_count = 0
+        if self.labels is None:
+            return None
         for i, label in enumerate(self.labels):
-            if not re.search(p_eheat, label) and not re.search(p_eisol, label):
+            # print(label)
+            if (not re.search(p_eheat, label) 
+                and not re.search(p_eisol, label)
+                and not re.search(p_gcore, label)):
                 m = re.findall(p_float, label)
                 for j, floater in enumerate(m):
                     p_floats.append(float(floater))

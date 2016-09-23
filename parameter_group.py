@@ -27,8 +27,7 @@ class ParameterGroup:
     def set_pfloats(self, pfloats):
         for i in range(len(self.inputs)):
             for j in range(len(self.inputs[i].parameters)):
-                for k in range(len(pfloats)):
-                    self.inputs[i].parameters[j].p_floats[4*k] = pfloats[k]
+                self.inputs[i].parameters[j].set_floats(pfloats)
 
     def xyz_str(self):
         ss = ""
