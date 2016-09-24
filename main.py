@@ -61,42 +61,35 @@ MUTPT = reparm_data.reparm_input.mutation_perturbation
 IMUTPT = 0.05
 # Initial List of parameters
 IL = []
-gin = GaussianInput(open('test.com', 'r').read())
-print(gin.str())
-# reparm_data.best_am1_individual.inputs[0] = gin
-# for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
-    # IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
+for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
+    IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
 
 # The evaluator (fitness, cost) function
-# eval = Evaluator(reparm_data=reparm_data)
-# if reparm_data.original_fitness is None:
-    # eval.eval(IL)
-# print("Original Fitness:", reparm_data.original_fitness)
-
-# for i in range(len(IL)):
-    # IL[i] = 5.0
-# reparm_data.best_am1_individual.set_pfloats(IL)
+eval = Evaluator(reparm_data=reparm_data)
+if reparm_data.original_fitness is None:
+    eval.eval(IL)
+print("Original Fitness:", reparm_data.original_fitness)
 
 # Differential Evolution
-# diff_init=None
-# if should_continue:
-    # diff_init="saved"
-# else:
-    # diff_init="latinhypercube"
-# bounds = []
-# bp = 10
-# for i in IL:
-    # value = 0, bp
-    # bounds.append(value)
+diff_init=None
+if should_continue:
+    diff_init="saved"
+else:
+    diff_init="latinhypercube"
+bounds = []
+bp = 10
+for i in IL:
+    value = 0, bp
+    bounds.append(value)
 
-# time_start = time.time()
-# ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN, init=diff_init,
-                             # mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
-# time_finish = time.time()
-# print("Finished DE in", time_finish - time_start, "seconds")
-# best = reparm_data.best_am1_individual
-# best.set_pfloats(ret.x)
-# open('ga_best.com', 'w').write(best.inputs[0].str())
+time_start = time.time()
+ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN, init=diff_init,
+                             mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
+time_finish = time.time()
+print("Finished DE in", time_finish - time_start, "seconds")
+best = reparm_data.best_am1_individual
+best.set_pfloats(ret.x)
+open('ga_best.com', 'w').write(best.inputs[0].str())
 
 # BasinHopping
 # ret = basinhopping(eval.eval, IL, niter=200)
