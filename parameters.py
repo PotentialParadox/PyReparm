@@ -26,22 +26,24 @@ class Parameters:
             return labels
         return None
 
+    # Extract the floats from the list of labels.
     def __extract_floats(self):
         p_float = re.compile("-?\\d+\\.\\d+")
         p_not_label = re.compile("-?\\d+\\.\\d+.*\n*")
         p_eisol = re.compile("EISol")
         p_eheat = re.compile("EHeat")
-        p_gcore = re.compile("GCore")
         p_newline = re.compile("\n")
         p_floats = []
         line_count = 0
         if self.labels is None:
             return None
         for i, label in enumerate(self.labels):
-            # print(label)
-            if (not re.search(p_eheat, label) 
-                and not re.search(p_eisol, label)
-                and not re.search(p_gcore, label)):
+            # print(i, label)
+            # These are the parameters to minimize, us the 
+            # print statebment above to determine the numbers
+            ptm = [9, 28, 29, 30, 31, 33, 36, 38, 40, 
+                   45, 60, 62, 64, 66, 68]
+            if i in ptm:
                 m = re.findall(p_float, label)
                 for j, floater in enumerate(m):
                     p_floats.append(float(floater))

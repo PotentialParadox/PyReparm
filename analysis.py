@@ -257,9 +257,10 @@ if load_success:
 else:
     print("Reparm.dat does not match reparm.in, analysis closed")
 
+# 3, 22, 23, 24, 25, 28, 29, 33, 35, 37, 40, 62, 65, 67, 69, 71, 79
 X = np.array(reparm_data.features)
 Y = np.array(reparm_data.observations)
-T = np.transpose(np.append(X[:,70:], Y, axis=1))
+T = np.transpose(np.append(X[:,80:], Y, axis=1))
 print(T)
 sns.set(style='whitegrid', context='notebook')
 sns.set(font_scale=1.0)

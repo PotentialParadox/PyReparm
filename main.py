@@ -59,10 +59,28 @@ CWD = reparm_data.reparm_input.crowding_factor
 MUTPT = reparm_data.reparm_input.mutation_perturbation
 # Initial Perturbation
 IMUTPT = 0.05
+
+# Uncomment to test parameters that are modified
+# gin = GaussianInput(open('test.com', 'r').read())
+# for i in range(len(reparm_data.best_am1_individual.inputs)):
+    # reparm_data.best_am1_individual.inputs[i] = gin
+
+
 # Initial List of parameters
 IL = []
 for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
     IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
+
+
+# Uncomment to test parameters that are modified
+# for i in range(len(IL)):
+    # IL[i] = 5
+# gin.parameters[0].set_floats(IL)
+# print(gin.str())
+
+
+# for i, val in enumerate(IL):
+    # print(i, val)
 
 # The evaluator (fitness, cost) function
 eval = Evaluator(reparm_data=reparm_data)
@@ -77,9 +95,9 @@ if should_continue:
 else:
     diff_init="latinhypercube"
 bounds = []
-bp = 10
+bp = 0.5
 for i in IL:
-    value = 0, bp
+    value = i*(1+bp), i*(1-bp)
     bounds.append(value)
 
 time_start = time.time()
