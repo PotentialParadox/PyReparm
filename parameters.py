@@ -30,8 +30,8 @@ class Parameters:
     def __extract_floats(self):
         p_float = re.compile("-?\\d+\\.\\d+")
         p_not_label = re.compile("-?\\d+\\.\\d+.*\n*")
-        p_eisol = re.compile("EISol")
-        p_eheat = re.compile("EHeat")
+        # p_eisol = re.compile("EISol")
+        # p_eheat = re.compile("EHeat")
         p_newline = re.compile("\n")
         p_floats = []
         line_count = 0
