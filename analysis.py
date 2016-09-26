@@ -4,7 +4,7 @@ from gaussian_input import GaussianInput
 from gaussian import gaussian_single as run
 from gaussian_output import find_ground_energy as energy
 from gaussian_output import find_opt_coordinates
-# from rdkit_converter import reparm_to_rdkit, rdkit_to_reparm
+from rdkit_converter import reparm_to_rdkit, rdkit_to_reparm
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdMolTransforms import SetDihedralDeg, SetBondLength
 import numpy as np
@@ -164,6 +164,9 @@ class Analysis:
         c = rdk_coords.GetConformer()
 
         hlt = self.reparm_data.reparm_input.high_level_theory
+        # Dustin Temp
+        # gin_temp = GaussianInput(open('ga_best.com', 'r').read())
+        # params = gin_temp.parameters[0]
         params = self.reparm_data.best_am1_individual.inputs[0].parameters[0]
         am1_energies = []
         reparm_energies = []
@@ -251,27 +254,27 @@ file = fin.read()
 reparm_data = ReparmData(file)
 load_success = reparm_data.load()
 if load_success:
-    # analysis = Analysis(reparm_data)
-    # analysis.dithiophene()
+    analysis = Analysis(reparm_data)
+    analysis.dithiophene()
     print("Success")
 else:
     print("Reparm.dat does not match reparm.in, analysis closed")
 
 # 3, 22, 23, 24, 25, 28, 29, 33, 35, 37, 40, 62, 65, 67, 69, 71, 79
-X = np.array(reparm_data.features)
-Y = np.array(reparm_data.observations)
-T = np.transpose(np.append(X[:,80:], Y, axis=1))
-print(T)
-sns.set(style='whitegrid', context='notebook')
-sns.set(font_scale=1.0)
-cm = np.corrcoef(T)
-hm = sns.heatmap(cm,
-        cbar=True,
-        annot=True,
-        square=True,
-        fmt='.2f',
-        annot_kws={'size': 10})
-plt.show()
+# X = np.array(reparm_data.features)
+# Y = np.array(reparm_data.observations)
+# T = np.transpose(np.append(X[:,80:], Y, axis=1))
+# print(T)
+# sns.set(style='whitegrid', context='notebook')
+# sns.set(font_scale=1.0)
+# cm = np.corrcoef(T)
+# hm = sns.heatmap(cm,
+        # cbar=True,
+        # annot=True,
+        # square=True,
+        # fmt='.2f',
+        # annot_kws={'size': 10})
+# plt.show()
 
 # IL = []
 # for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
