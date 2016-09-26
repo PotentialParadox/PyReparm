@@ -3,7 +3,8 @@ import re
 
 class Parameters:
     def __init__(self, from_parameter_string=None,
-                 labels=None, p_floats=None):
+                 labels=None, p_floats=None, fetch_all=False):
+        self.fetch_all = fetch_all
         if from_parameter_string:
             self.labels = self.__find_labels(from_parameter_string)
             self.p_floats = self.__extract_floats()
@@ -30,20 +31,28 @@ class Parameters:
     def __extract_floats(self):
         p_float = re.compile("-?\\d+\\.\\d+")
         p_not_label = re.compile("-?\\d+\\.\\d+.*\n*")
-        # p_eisol = re.compile("EISol")
-        # p_eheat = re.compile("EHeat")
+        p_eisol = re.compile("EISol")
+        p_eheat = re.compile("EHeat")
         p_newline = re.compile("\n")
         p_floats = []
         line_count = 0
         if self.labels is None:
             return None
         for i, label in enumerate(self.labels):
+            is_float_label = False
             # print(i, label)
             # These are the parameters to minimize, us the 
             # print statebment above to determine the numbers
             ptm = [9, 28, 29, 30, 31, 33, 36, 38, 40, 
                    45, 60, 62, 64, 66, 68]
             if i in ptm:
+                is_float_label = True
+            # For certain precedures we want to search the whole
+            # Parameter Space
+            if (self.fetch_all and not re.search(p_eisol, label)
+                and not re.search(p_eheat, label)):
+                is_float_label = True
+            if is_float_label:
                 m = re.findall(p_float, label)
                 for j, floater in enumerate(m):
                     p_floats.append(float(floater))

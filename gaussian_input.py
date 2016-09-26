@@ -7,14 +7,14 @@ from zmatrix import ZMatrix
 
 
 class GaussianInput:
-    def __init__(self, input_string=None, header=None, coordinates=None, parameters=None):
+    def __init__(self, input_string=None, header=None, coordinates=None, parameters=None, fetch_all=False):
         self.header = []
         self.coordinates = []
         self.parameters = []
         if input_string:
             self.find_header(input_string)
             self.find_coordinates(input_string)
-            self.find_parameters(input_string)
+            self.find_parameters(input_string, fetch_all)
         else:
             try:
                 self.header.extend(header)
@@ -70,7 +70,7 @@ class GaussianInput:
                 self.coordinates.append(None)
         return None
 
-    def find_parameters(self, file_string):
+    def find_parameters(self, file_string, fetch_all):
         p_parameters = re.compile("Method=(.|\n)*(?=--Link1)")
         m = re.search(p_parameters, file_string)
         if not m:
@@ -80,7 +80,7 @@ class GaussianInput:
             self.parameters.append(None)
         else:
             parameter_string = m.group(0)
-            self.parameters.append(Parameters(from_parameter_string=parameter_string))
+            self.parameters.append(Parameters(from_parameter_string=parameter_string, fetch_all=fetch_all))
 
     def link(self, gin):
         assert isinstance(gin, GaussianInput)
