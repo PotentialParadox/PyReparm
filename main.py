@@ -88,28 +88,26 @@ if reparm_data.original_fitness is None:
 print("Original Fitness:", reparm_data.original_fitness)
 
 # Differential Evolution
-# diff_init=None
-# if should_continue:
-#     diff_init="saved"
-# else:
-#     diff_init="latinhypercube"
-# bounds = []
-# bp = 0.5
-# for i in IL:
-#     value = i*(1+bp), i*(1-bp)
-#     bounds.append(value)
-#
-# time_start = time.time()
-# try:
-#     ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN, init=diff_init,
-#                                  mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
-# except KeyboardInterrupt:
-#     time_finish = time.time()
-#     print("Finished DE in", time_finish - time_start, "seconds")
-#     best = reparm_data.best_am1_individual
-#     best.set_pfloats(ret.x)
-#     reparm_data.save()
-#     open('ga_best.com', 'w').write(best.inputs[0].str())
+diff_init=None
+if should_continue:
+    diff_init="saved"
+else:
+    diff_init="latinhypercube"
+bounds = []
+bp = 0.5
+for i in IL:
+    value = i*(1+bp), i*(1-bp)
+    bounds.append(value)
+
+time_start = time.time()
+ret = differential_evolution(eval.eval, bounds=bounds, popsize=PSIZE, maxiter=NGEN, init=diff_init,
+                             mutation=(0.3, 0.9), recombination=CXPB, disp=True, strategy='best2bin')
+time_finish = time.time()
+print("Finished DE in", time_finish - time_start, "seconds")
+best = reparm_data.best_am1_individual
+best.set_pfloats(ret.x)
+reparm_data.save()
+open('ga_best.com', 'w').write(best.inputs[0].str())
 
 # BasinHopping
 # ret = basinhopping(eval.eval, IL, niter=200)
@@ -120,18 +118,6 @@ print("Original Fitness:", reparm_data.original_fitness)
 # Nelder-Mead
 # We need to activate all the parameters
 best = reparm_data.best_am1_individual
-
-# Begin Dustin Temporary
-gin_temp = GaussianInput(open('ga_best.com', 'r').read())
-params = gin_temp.parameters[0]
-for i in range(len(best.inputs)):
-    best.inputs[i].parameters[0] = params
-reparm_data.best_fitness = reparm_data.original_fitness
-reparm_data.targets = []
-reparm_data.observations = []
-reparm_data.features = []
-# End Dustin Temporary
-
 # Initial List of parameters
 for i in range(len(best.inputs)):
     best.inputs[i] = GaussianInput(best.inputs[i].str(), fetch_all=True)
@@ -139,13 +125,11 @@ IL = []
 for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
     IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
 time_start = time.time()
-try:
-    ret=fmin(eval.eval, IL)
-except KeyboardInterrupt:
-    time_finish = time.time()
-    print("Finished NM in", time_finish - time_start, "seconds")
-    best = reparm_data.best_am1_individual
-    best.set_pfloats(ret.x)
-    reparm_data.save()
-    open('ga_best.com', 'w').write(best.inputs[0].str())
+ret=fmin(eval.eval, IL, maxiter=NGEN)
+time_finish = time.time()
+print("Finished NM in", time_finish - time_start, "seconds")
+best = reparm_data.best_am1_individual
+best.set_pfloats(ret.x)
+reparm_data.save()
+open('ga_best.com', 'w').write(best.inputs[0].str())
 
