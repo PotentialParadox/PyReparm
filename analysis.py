@@ -77,6 +77,9 @@ class Analysis:
         c = rdk_coords.GetConformer()
 
         hlt = self.reparm_data.reparm_input.high_level_theory
+        # Dustin Temp
+        # gin_temp = GaussianInput(open('ga_best.com', 'r').read())
+        # params = gin_temp.parameters[0]
         params = self.reparm_data.best_am1_individual.inputs[0].parameters[0]
         am1_energies = []
         reparm_energies = []
@@ -117,6 +120,9 @@ class Analysis:
         number_steps = 20
         gin = GaussianInput(open("dithi_face_to_face.com", 'r').read())
         hlt = self.reparm_data.reparm_input.high_level_theory
+        # Dustin Temp
+        # gin_temp = GaussianInput(open('ga_best.com', 'r').read())
+        # params = gin_temp.parameters[0]
         params = self.reparm_data.best_am1_individual.inputs[0].parameters[0]
         coords = gin.coordinates[0].coordinates
         gin.parameters[0] = params
