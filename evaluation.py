@@ -86,7 +86,7 @@ class Evaluator:
 
             difference = am1_energy_differences - hlt_energy_differences
             sum_of_squares += np.sum(np.square(difference))
-        return np.square(sum_of_squares)/len(nsets*ng) # Returns the RMS of the energy differences
+        return np.square(sum_of_squares)/(nsets*ng) # Returns the RMS of the energy differences
 
     def freq_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs
