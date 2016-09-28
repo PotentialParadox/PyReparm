@@ -20,6 +20,7 @@ class Evaluator:
         gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
         if not gouts:
             return float('Inf')
+        param_group.outputs=gouts
         # opt_fitness = self.opt_fitness(gouts)
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
@@ -58,6 +59,7 @@ class Evaluator:
             new_best.extend(current)
             self.reparm_data.best_fitness = new_best
             print("New Best Found:", self.reparm_data.best_fitness)
+            self.reparm_data.best_am1_individual=param_group
         self.reparm_data.save()
 
         return total_fitness
