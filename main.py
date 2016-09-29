@@ -94,9 +94,13 @@ if should_continue:
 else:
     diff_init="latinhypercube"
 bounds = []
-bp = 0.5
+bp = 1.5
 for i in IL:
-    value = i*(1+bp), i*(1-bp)
+    lowbound = 0
+    if i*(1-bp) > 0:
+        lowbound = i*(1-bp)
+    highbound = i*(1+bp)
+    value = lowbound, highbound
     bounds.append(value)
 
 time_start = time.time()
