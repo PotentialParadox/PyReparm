@@ -109,7 +109,7 @@ print("Original Fitness:", reparm_data.original_fitness)
     # nx = np.array(x)
     # ny = np.array([1,2,3,4,5,6,7,8])
     # return float(np.sum(np.square(nx-ny))),
-# PSIZE = 8
+# PSIZE = 32
 # NELITES = 2
 # NNOMALS = PSIZE - NELITES
 # NSURV = 6
@@ -119,7 +119,7 @@ print("Original Fitness:", reparm_data.original_fitness)
 creator.create("FitnessMax", base.Fitness, weights=(-1.0,))
 creator.create("ParamSet", list, fitness=creator.FitnessMax, best=None)
 toolbox = base.Toolbox()
-toolbox.register("individual", generator, IL, 0.01)
+toolbox.register("individual", generator, IL, 0.5)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("mate", tools.cxSimulatedBinary, eta=CWD)
 toolbox.register("mutate", mutateset, pert=0.5, chance=0.1)
@@ -129,7 +129,7 @@ toolbox.register("evaluate", evaluator.eval)
 pop = toolbox.population(n=PSIZE)
 for i in pop: i.fitness.values = toolbox.evaluate(i)
 
-# time_start = time.time()
+time_start = time.time()
 for n in range(NGEN):
     print('Begining Step', n)
     # Do aristocratic cloning
@@ -158,7 +158,7 @@ for n in range(NGEN):
             pop[i] = child1
         else:
             pop[i] = child2
-for i in pop: print(i)
+for i in pop[0:5]: print(i)
 time_finish = time.time()
 print("Finished GA in", time_finish - time_start, "seconds")
 best = reparm_data.best_am1_individual
