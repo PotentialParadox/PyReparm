@@ -98,7 +98,7 @@ for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_
 
 # The evaluator (fitness, cost) function
 if reparm_data.original_fitness is None:
-    eval.eval(IL)
+    evaluator.eval(IL)
 print("Original Fitness:", reparm_data.original_fitness)
 
 #############################################
@@ -129,6 +129,7 @@ toolbox.register("evaluate", evaluator.eval)
 pop = toolbox.population(n=PSIZE)
 for i in pop: i.fitness.values = toolbox.evaluate(i)
 
+# time_start = time.time()
 for n in range(NGEN):
     print('Begining Step', n)
     # Do aristocratic cloning
@@ -158,6 +159,11 @@ for n in range(NGEN):
         else:
             pop[i] = child2
 for i in pop: print(i)
+time_finish = time.time()
+print("Finished GA in", time_finish - time_start, "seconds")
+best = reparm_data.best_am1_individual
+reparm_data.save()
+open('ga_best.com', 'w').write(best.inputs[0].str())
 
 #############################################
 #         END GA
