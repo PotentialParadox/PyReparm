@@ -9,6 +9,7 @@ class ReparmInput:
         self.number_generations = find_number_generations(input_string)
         self.number_processors = find_number_processors(input_string)
         self.number_geometries = find_number_geometries(input_string)
+        self.number_elites = find_number_elites(input_string)
         self.training_sets = find_training_sets(input_string)
         self.population_size = find_population_size(input_string)
         self.temperature = find_temperature(input_string)
@@ -74,6 +75,13 @@ def find_number_geometries(input_string):
     else:
         return None
 
+def find_number_elites(input_string):
+    p_search = re.compile("Number of Elites:\s+(.+)")
+    m = re.search(p_search, input_string)
+    if m:
+        return int(m.group(1))
+    else:
+        return None
 
 def find_training_sets(input_string):
     p_search = re.compile("Training Sets:\s+(.+)")

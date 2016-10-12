@@ -268,25 +268,26 @@ else:
 
 # 3, 22, 23, 24, 25, 28, 29, 33, 35, 37, 40, 62, 65, 67, 69, 71, 79
 # X = np.array(reparm_data.features)
+# print(X.shape)
 # Y = np.array(reparm_data.observations)
-# T = np.transpose(np.append(X[:,80:], Y, axis=1))
-# print(T)
+# print(Y.shape)
+# T = np.transpose(np.append(X[:,0:10], Y, axis=1))
 # sns.set(style='whitegrid', context='notebook')
 # sns.set(font_scale=1.0)
 # cm = np.corrcoef(T)
 # hm = sns.heatmap(cm,
-        # cbar=True,
-        # annot=True,
-        # square=True,
-        # fmt='.2f',
-        # annot_kws={'size': 10})
+#         cbar=True,
+#         annot=True,
+#         square=True,
+#         fmt='.2f',
+#         annot_kws={'size': 10})
 # plt.show()
-
+#
 # IL = []
 # for i in range(0, len(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats), 4):
-    # IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
-
+#     IL.append(reparm_data.best_am1_individual.inputs[0].parameters[0].p_floats[i])
+#
 # for i, v in enumerate(IL):
-    # print(i, v)
-
+#     print(i, v)
+#
 # print(reparm_data.best_am1_individual.inputs[0].parameters[0].str())

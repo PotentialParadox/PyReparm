@@ -19,7 +19,7 @@ class Evaluator:
         nproc = self.reparm_data.reparm_input.number_processors
         gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
         if not gouts:
-            return float('Inf')
+            return float('Inf'),
         param_group.outputs=gouts
         # opt_fitness = self.opt_fitness(gouts)
         energy_fitness = self.energy_fitness(gouts)
@@ -27,12 +27,12 @@ class Evaluator:
         # freq_fitness = self.freq_fitness(gouts)
         # ir_fitness = self.ir_intensity_fitness(gouts)
         if energy_fitness is None or dipole_fitness is None:
-            return float('Inf')
+            return float('Inf'),
         current = [energy_fitness, dipole_fitness]
 
         # Update Data Log for Sci-kitLearn
-        self.reparm_data.features.append(am1)
-        self.reparm_data.observations.append(current)
+        self.reparm_data.features.append(list(am1))
+        self.reparm_data.observations.append(list(current))
 
         if self.aebo(current, multiplier=1):
             self.reparm_data.targets.append(current)
@@ -62,7 +62,7 @@ class Evaluator:
             self.reparm_data.best_am1_individual=param_group
         self.reparm_data.save()
 
-        return total_fitness
+        return float(total_fitness),
 
     def opt_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs[-1]
