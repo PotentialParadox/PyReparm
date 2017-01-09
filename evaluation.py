@@ -19,20 +19,19 @@ class Evaluator:
         nproc = self.reparm_data.reparm_input.number_processors
         gouts = run_gaussian(parameter_group=param_group, number_processors=nproc)
         if not gouts:
-            return float('Inf'),
-        param_group.outputs=gouts
+            return float('Inf')
         # opt_fitness = self.opt_fitness(gouts)
         energy_fitness = self.energy_fitness(gouts)
         dipole_fitness = self.dipole_fitness(gouts)
         # freq_fitness = self.freq_fitness(gouts)
         # ir_fitness = self.ir_intensity_fitness(gouts)
         if energy_fitness is None or dipole_fitness is None:
-            return float('Inf'),
+            return float('Inf')
         current = [energy_fitness, dipole_fitness]
 
         # Update Data Log for Sci-kitLearn
-        self.reparm_data.features.append(list(am1))
-        self.reparm_data.observations.append(list(current))
+        self.reparm_data.features.append(am1)
+        self.reparm_data.observations.append(current)
 
         if self.aebo(current, multiplier=1):
             self.reparm_data.targets.append(current)
@@ -59,10 +58,9 @@ class Evaluator:
             new_best.extend(current)
             self.reparm_data.best_fitness = new_best
             print("New Best Found:", self.reparm_data.best_fitness)
-            self.reparm_data.best_am1_individual=param_group
-        self.reparm_data.save()
+            self.reparm_data.save()
 
-        return float(total_fitness),
+        return total_fitness
 
     def opt_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs[-1]
@@ -88,7 +86,7 @@ class Evaluator:
 
             difference = am1_energy_differences - hlt_energy_differences
             sum_of_squares += np.sum(np.square(difference))
-        return np.sqrt(sum_of_squares)/(nsets*ng) # Returns the RMS of the energy differences
+        return sum_of_squares
 
     def freq_fitness(self, am1):
         hlt = self.reparm_data.high_level_outputs
@@ -195,4 +193,3 @@ class Evaluator:
             if i < 0.00000000001:
                 return True
         return False
-
