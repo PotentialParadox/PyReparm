@@ -41,9 +41,17 @@ class Parameters:
         for i, label in enumerate(self.labels):
             is_float_label = False
             # print(i, label)
-            # These are the parameters to minimize, us the 
-            # print statebment above to determine the numbers
-            ptm = [9, 28, 29, 30, 31, 33, 36, 38, 40, 
+            # These are the parameters to minimize, use the
+            # print statement above to determine the number
+            # for changes, currently we are using
+            # H
+            # zeta-overlap
+            # C
+            # F0sp, F0pp, F2pp, G1sp, U, 2nd DDN, 1st KON,
+            # 3rd KON, DipHyp,
+            # S
+            # U, 1st DDN, CoreKO, 2nd KON, 4th KON
+            ptm = [9, 28, 29, 30, 31, 33, 36, 38, 40,
                    45, 60, 62, 64, 66, 68]
             if i in ptm:
                 is_float_label = True
